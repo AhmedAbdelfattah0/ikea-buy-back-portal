@@ -1,0 +1,504 @@
+@use "../../../../../assets/global/variables" as *;
+
+.estimation-page {
+  max-width: 695px;
+  margin: 14px 142px;
+  padding: 32px 24px 48px;
+  font-family: $font-stack-ikea;
+  background: #fff;
+}
+
+// Page Title
+.page-title {
+  font-size: 28px;
+  font-weight: 700;
+  color: #111;
+  margin: 0 0 24px;
+  line-height: 1.25;
+}
+
+// Estimation Header
+.estimation-header {
+  margin-block-end: 16px;
+}
+
+.estimation-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: #111;
+  margin: 0 0 8px;
+  line-height: 1.3;
+}
+
+.estimation-description {
+  font-size: 14px;
+  color: #484848;
+  margin: 0;
+  line-height: 1.5;
+  white-space: pre-line;
+}
+
+// Back Button
+.back-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: none;
+  border: none;
+  padding: 0;
+  margin-block-end: 24px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 700;
+  color: #111;
+  font-family: $font-stack-ikea;
+  transition: color 0.2s;
+
+  &:hover {
+    color: #0058a3;
+  }
+
+  skapa-icon {
+    display: flex;
+    font-size: 16px;
+  }
+}
+
+// Item Row
+.estimation-items {
+  margin-block-end: 16px;
+}
+
+.estimation-item {
+  padding: 20px 0;
+  border-bottom: 1px solid #e5e5e5;
+
+  &:first-child {
+    padding-block-start: 16px;
+  }
+}
+
+.estimation-item__image {
+  width: 60px;
+  height: 60px;
+  flex-shrink: 0;
+  float: left;
+  margin-inline-end: 16px;
+}
+
+.item-thumbnail {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.estimation-item__content {
+  overflow: hidden;
+}
+
+.estimation-item__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+  margin-block-end: 12px;
+}
+
+.estimation-item__info {
+  flex: 1;
+  min-width: 0;
+}
+
+.item-name {
+  font-size: 16px;
+  font-weight: 700;
+  color: #111;
+  margin: 0 0 4px;
+  line-height: 1.3;
+}
+
+.item-description {
+  font-size: 14px;
+  color: #484848;
+  margin: 0 0 2px;
+  line-height: 1.4;
+}
+
+.item-condition {
+  font-size: 14px;
+  color: #484848;
+  margin: 0;
+  line-height: 1.4;
+}
+
+.item-price {
+  font-size: 16px;
+  font-weight: 700;
+  color: #111;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+// Quantity + Remove
+.estimation-item__actions {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding-inline-start: 76px;
+
+  skapa-quantity-stepper {
+    font-family: $font-stack-ikea;
+  }
+}
+
+.remove-btn {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 400;
+  color: #111;
+  font-family: $font-stack-ikea;
+  text-decoration: underline;
+  transition: color 0.2s;
+
+  &:hover {
+    color: #0058a3;
+  }
+}
+
+// Total Row
+.estimation-total {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 0;
+  border-block-end: 1px solid #e5e5e5;
+  margin-block-end: 32px;
+}
+
+.total-label {
+  font-size: 14px;
+  font-weight: 400;
+  color: #111;
+}
+
+.total-price {
+  font-size: 16px;
+  font-weight: 700;
+  color: #111;
+}
+
+// Requirements
+.requirements-section {
+  margin-block-start: 32px;
+  margin-block-end: 32px;
+}
+
+.requirements-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: #111;
+  margin: 0 0 8px;
+  line-height: 1.3;
+}
+
+.requirements-description {
+  font-size: 14px;
+  color: #484848;
+  margin: 0 0 24px;
+  line-height: 1.5;
+}
+
+.requirement {
+  margin-block-end: 20px;
+}
+
+.requirement-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: #111;
+  margin: 0 0 6px;
+  line-height: 1.4;
+
+  .requirement-number {
+    display: inline-block;
+    margin-inline-end: 4px;
+  }
+}
+
+.requirement-description {
+  font-size: 14px;
+  color: #484848;
+  margin: 0;
+  line-height: 1.5;
+}
+
+// Sticker Example
+.sticker-example {
+  margin-block-start: 20px;
+  padding: 20px;
+   border-radius: 2px;
+}
+
+.sticker-label {
+  display: inline-grid;
+  grid-template-rows: auto 1fr auto;
+  border: 1px solid #929292;
+  border-radius: 2px;
+  padding: 10px 12px;
+  background: #f5f5f5;
+  min-width: 180px;
+  gap: 6px;
+
+  &__top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  &__body {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  &__bottom {
+    border-block-start: 1px solid #e5e5e5;
+    padding-block-start: 4px;
+  }
+}
+
+.sticker-made {
+  font-size: 9px;
+  color: #484848;
+  line-height: 1.2;
+}
+
+.sticker-ikea-logo {
+  font-size: 11px;
+  font-weight: 700;
+  color: #fff;
+  background: #0058a3;
+  padding: 2px 5px;
+  border-radius: 1px;
+  line-height: 1;
+}
+
+.sticker-name {
+  font-size: 14px;
+  font-weight: 700;
+  color: #111;
+  line-height: 1.2;
+}
+
+.sticker-number {
+  font-size: 11px;
+  color: #484848;
+  line-height: 1.2;
+}
+
+.sticker-info {
+  font-size: 8px;
+  color: #929292;
+  line-height: 1.2;
+}
+
+// Sell Section
+.sell-section {
+  margin-block-start: 32px;
+  padding-block-start: 0;
+}
+
+.sell-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: #111;
+  margin: 0 0 24px;
+  line-height: 1.3;
+}
+
+.form-group {
+  margin-block-end: 16px;
+
+  // Ensure consistent width for all form elements
+  skapa-input-field,
+  skapa-combobox {
+    display: block;
+    width: 100%;
+  }
+
+  // Style the listbox dropdown
+  skapa-listbox {
+    max-height: 250px;
+    overflow-y: auto;
+  }
+
+  // Style individual menu items in the dropdown
+  skapa-listbox-menuitem {
+    display: block;
+    padding: 10px 14px;
+    cursor: pointer;
+    font-size: 14px;
+    font-family: $font-stack-ikea;
+    color: #111;
+    transition: background-color 0.2s;
+
+    &:hover {
+      background-color: #f5f5f5;
+    }
+
+    &:focus {
+      outline: 2px solid #0058a3;
+      outline-offset: -2px;
+      background-color: #f5f5f5;
+    }
+
+    &[selected] {
+      background-color: #e8f4ff;
+      font-weight: 700;
+    }
+  }
+}
+
+.addr__label {
+  display: block;
+  font-size: 14px;
+  font-weight: 700;
+  color: #111;
+  margin-block-end: 8px;
+}
+
+.invalid-feedback {
+  display: block;
+  font-size: 12px;
+  color: #e00751;
+  margin-block-start: 4px;
+}
+
+.custom-error {
+  color: #e00751;
+}
+
+// Privacy Checkbox
+skapa-checkbox-group {
+  display: block;
+  margin-block-start: 16px;
+  margin-block-end: 24px;
+  font-family: $font-stack-ikea;
+
+  label {
+    font-size: 12px;
+    color: #484848;
+    line-height: 1.5;
+    cursor: pointer;
+  }
+}
+
+.privacy-link {
+  color: #0058a3;
+  text-decoration: underline;
+
+  &:hover {
+    color: #004a8a;
+  }
+}
+
+// Error Message
+.error-message {
+  padding: 12px 16px;
+  margin-block-end: 16px;
+  background: #fef2f2;
+  border: 1px solid #f87171;
+  border-radius: 2px;
+  color: #991b1b;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+// Buttons
+.btn-sell-back,
+.btn-go-back {
+  display: block;
+  width: 100%;
+  padding: 14px 24px;
+  border-radius: 50px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  font-family: $font-stack-ikea;
+  transition: all 0.2s;
+  text-align: center;
+  line-height: 1.5;
+}
+
+.btn-sell-back {
+  margin-block-end: 12px;
+  background: #0058a3;
+  color: #fff;
+  border: none;
+
+  &:hover:not(:disabled) {
+    background: #004a8a;
+  }
+
+  &:disabled {
+    background: #dfdfdf;
+    color: #929292;
+    cursor: not-allowed;
+  }
+
+  &.btn-loading {
+    position: relative;
+    pointer-events: none;
+
+    &::after {
+      content: '';
+      position: absolute;
+      width: 14px;
+      height: 14px;
+      margin-inline-start: 8px;
+      border: 2px solid #fff;
+      border-top-color: transparent;
+      border-radius: 50%;
+      animation: spin 0.6s linear infinite;
+    }
+  }
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.btn-go-back {
+  background: #fff;
+  color: #111;
+  border: 2px solid #111;
+
+  &:hover {
+    background: #f5f5f5;
+  }
+}
+
+// RTL
+[dir='rtl'] {
+  .back-btn {
+    skapa-icon {
+      transform: scaleX(-1);
+    }
+  }
+
+  .estimation-item__image {
+    float: right;
+    margin-inline-end: 0;
+    margin-inline-start: 16px;
+  }
+
+  .estimation-item__actions {
+    padding-inline-start: 0;
+    padding-inline-end: 76px;
+  }
+}

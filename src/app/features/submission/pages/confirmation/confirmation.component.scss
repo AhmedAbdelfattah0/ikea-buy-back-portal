@@ -1,0 +1,34 @@
+@use '../../../../../assets/global/variables' as *;
+@use '../../../../../assets/global/mixins' as *;
+
+.confirmation-page {
+  padding: $spacing-xl 0;
+  min-height: calc(100vh - 200px);
+  @include flex-center;
+  flex-direction: column;
+}
+
+.confirmation-header {
+  text-align: center;
+  margin-bottom: $spacing-xxl;
+
+  h1 {
+    color: $success-color;
+    margin-bottom: $spacing-base;
+  }
+
+  p {
+    color: $text-secondary;
+    font-size: $font-size-large;
+  }
+}
+
+.confirmation-content {
+  @include flex-center;
+  min-height: 300px;
+}
+
+.placeholder-text {
+  color: $text-tertiary;
+  font-size: $font-size-medium;
+}

@@ -1,0 +1,76 @@
+<!-- Category Tree Navigation - Side by Side Columns -->
+<div class="category-tree">
+  <h3 class="category-tree__title">{{ translations().productDiscovery.categories }}</h3>
+
+  <div class="category-columns">
+    <!-- Level 1 - Main Categories -->
+    <div class="category-column">
+      <ul class="category-list">
+        @for (category of rootCategories(); track category.id) {
+          <li class="category-item">
+            <button
+              type="button"
+              class="category-button"
+              [class.category-button--selected]="isLevel1Selected(category)"
+              [class.category-button--has-children]="hasChildren(category)"
+              (click)="selectLevel1Category(category)"
+            >
+              <span class="category-name">{{ category.name }}</span>
+              @if (hasChildren(category)) {
+                <svg class="chevron-icon" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M6 4L10 8L6 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              }
+            </button>
+          </li>
+        }
+      </ul>
+    </div>
+
+    <!-- Level 2 - Subcategories (shown when level 1 selected) -->
+    @if (level2Categories().length > 0) {
+      <div class="category-column">
+        <ul class="category-list">
+          @for (category of level2Categories(); track category.id) {
+            <li class="category-item">
+              <button
+                type="button"
+                class="category-button"
+                [class.category-button--selected]="isLevel2Selected(category)"
+                [class.category-button--has-children]="hasChildren(category)"
+                (click)="selectLevel2Category(category)"
+              >
+                <span class="category-name">{{ category.name }}</span>
+                @if (hasChildren(category)) {
+                  <svg class="chevron-icon" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M6 4L10 8L6 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                }
+              </button>
+            </li>
+          }
+        </ul>
+      </div>
+    }
+
+    <!-- Level 3 - Sub-subcategories (shown when level 2 selected) -->
+    @if (level3Categories().length > 0) {
+      <div class="category-column">
+        <ul class="category-list">
+          @for (category of level3Categories(); track category.id) {
+            <li class="category-item">
+              <button
+                type="button"
+                class="category-button"
+                [class.category-button--selected]="isLevel3Selected(category)"
+                (click)="selectLevel3Category(category)"
+              >
+                <span class="category-name">{{ category.name }}</span>
+              </button>
+            </li>
+          }
+        </ul>
+      </div>
+    }
+  </div>
+</div>

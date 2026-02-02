@@ -1,0 +1,31 @@
+@use "../../../../assets/global/variables" as *;
+@use "../../../../assets/global/mixins" as *;
+
+.title-for-error-case {
+  text-align: start;
+  font-family: $font-stack-ikea;
+  font-style: normal;
+  font-weight: 700;
+  font-size: 24px;
+  line-height: 145%;
+  max-width: 490px;
+  letter-spacing: -0.0042em;
+
+  &[dir="rtl"] {
+    text-align: start;
+  }
+
+  @include responsive(mobile) {
+    width: 279px;
+    font-weight: 700;
+    font-size: 18px;
+  }
+}
+
+.max-width {
+  max-width: 450px;
+}
+
+.password-input-container {
+  margin-block-start: $spacing-md;
+}

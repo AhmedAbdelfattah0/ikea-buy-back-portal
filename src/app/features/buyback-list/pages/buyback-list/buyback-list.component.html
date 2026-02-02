@@ -1,0 +1,114 @@
+<div class="buyback-list-page">
+  <!-- Confirmation View -->
+  @if (showConfirmation()) {
+    <app-confirmation [confirmationNumber]="confirmationNumber()"></app-confirmation>
+  }
+
+  <!-- Estimation View -->
+  @if (showEstimation() && !showConfirmation()) {
+    <app-estimation
+      (back)="showEstimation.set(false)"
+      (submitted)="onSubmissionSuccess($event)">
+    </app-estimation>
+  }
+
+  <!-- Two Column Layout -->
+  @if (!showEstimation() && !showConfirmation()) {
+  <div class="browse-layout">
+    <!-- Left Column: Search + Categories + Products -->
+    <div class="browse-layout__left">
+      <!-- Header -->
+      <div class="page-header">
+        <h1 class="page-title">{{ translations().productDiscovery.title }}</h1>
+        <h2 class="page-heading">{{ translations().productDiscovery.pageHeading }}</h2>
+        <p class="page-description">{{ translations().productDiscovery.pageDescription }}</p>
+      </div>
+
+      <!-- Products Header (shown when category selected) -->
+      @if (selectedCategory()) {
+        <div class="products-header">
+          <button type="button" class="back-to-categories" (click)="clearCategorySelection()">
+            <!-- <skapa-icon-button title="Caption defined in the title attribute" href="" variant="tertiary"> -->
+              <skapa-icon slot="icon" icon="chevron-left-small"></skapa-icon> 
+              <!-- Tertiary action</skapa-icon-button> -->
+            {{ selectedCategory()!.name }}
+          </button>
+      
+        </div>
+      }
+
+      <!-- Search -->
+      <div class="search-section">
+        <div class="search-input-wrapper">
+
+          <skapa-search focus-with-clear-button="" size="large" class="search-input" >
+            <input  type="search" name="search" [placeholder]="translations().productDiscovery.searchPlaceholder" aria-label="Search for product categories, product names, etc."   [value]="searchQuery()"
+            (input)="onSearchInput($event)">
+            <span slot="clear-label">Clear search field</span>
+            <skapa-icon-button size="xsmall" variant="tertiary" slot="actions">
+                <skapa-icon slot="icon" icon="camera"></skapa-icon>
+                Camera
+              </skapa-icon-button>
+            
+            <span slot="search-label">Submit</span>
+          </skapa-search>
+
+
+          <!-- <input
+            type="text"
+            class="search-input"
+            [placeholder]="translations().productDiscovery.searchPlaceholder"
+            [value]="searchQuery()"
+            (input)="onSearchInput($event)"
+          />
+          @if (searchQuery()) {
+            <button
+              type="button"
+              class="search-clear"
+              (click)="clearSearch()"
+              attr.aria-label="{{ translations().common.close }}"
+            >
+              <skapa-icon icon="cross" slot="icon"></skapa-icon>
+            </button>
+          }
+          <skapa-icon  class="search-icon"  icon="magnifying-glass" slot="icon"></skapa-icon> -->
+        </div>
+      </div>
+
+      <!-- Main Content Area with Categories and Products -->
+      <div class="content-area">
+        <!-- Categories Navigation (hidden when products loaded) -->
+        @if (!selectedCategory()) {
+          <div class="categories-section">
+            <app-category-tree (categorySelected)="onCategorySelected($event)"></app-category-tree>
+          </div>
+        }
+
+        <!-- Products Grid (shown when category selected, replaces categories) -->
+        @if (selectedCategory()) {
+          <div class="products-section">
+            <app-product-grid
+              [products]="filteredProducts()"
+              [isLoading]="isLoading()"
+              (productSelected)="onProductSelected($event)"
+            ></app-product-grid>
+          </div>
+        }
+      </div>
+
+      <!-- Info Message -->
+      <div class="info-message">
+        <p>{{ translations().productDiscovery.selectProduct }}</p>
+      </div>
+    </div>
+
+    <!-- Right Column: Buyback List Sidebar -->
+    <div class="browse-layout__right">
+      <app-buyback-sidebar (continueToOfferClick)="onContinueToOffer()"></app-buyback-sidebar>
+    </div>
+  </div>
+
+  <!-- Condition Selector Modal -->
+  <app-condition-selector></app-condition-selector>
+  } <!-- end @if (!showEstimation()) -->
+</div>

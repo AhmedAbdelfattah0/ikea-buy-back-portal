@@ -1,0 +1,119 @@
+<!-- Buyback List Sidebar -->
+<div class="buyback-sidebar">
+  <div class="buyback-sidebar__header">
+    <h3 class="sidebar-title">{{ translations().buybackList.title }}</h3>
+    @if (!isEmpty()) {
+      <span class="item-count">{{ itemCount() }} {{ translations().buybackList.itemCount }}</span>
+    }
+  </div>
+
+  @if (isEmpty()) {
+    <!-- Empty State -->
+    <div class="buyback-sidebar__empty">
+      <p>{{ translations().buybackList.noItems }}</p>
+    </div>
+  } @else {
+    <!-- Items List -->
+    <div class="buyback-sidebar__items">
+      @for (item of items(); track item.id) {
+        <div class="buyback-item">
+          <div class="buyback-item__image">
+            <img
+              [src]="item.product.thumbnailUrl"
+              [alt]="item.product.name"
+              class="item-thumbnail"
+            />
+          </div>
+
+          <div class="buyback-item__details">
+            <h4 class="item-name">{{ item.product.name }}</h4>
+            <p class="item-condition">{{ getConditionLabel(item.condition) }}</p>
+
+            <!-- Quantity Controls -->
+            <div class="quantity-controls">
+              <skapa-quantity-stepper
+                [attr.min-value]="1"
+                [attr.max-value]="9999"
+                [attr.default-value]="item.quantity"
+                (skapa-quantity-stepper-change)="onQuantityChange(item.id, $event)"
+              >
+                <span slot="description">{{ translations().buybackList.updateCondition }}</span>
+                <span slot="input-label">{{ translations().common.edit }}</span>
+                <span slot="plus-label">{{ translations().common.next }}</span>
+                <span slot="minus-label">{{ translations().common.previous }}</span>
+              </skapa-quantity-stepper>
+            </div>
+
+            <!-- Price and Delete -->
+            <div class="item-footer">
+              <div class="item-price">
+                <span class="price-label">{{ translations().buybackList.itemPrice }}:</span>
+                <skapa-price
+                  class="price-value"
+                  size="small"
+                  currency-position="leading"
+                  currency-spacing="thin"
+                  [integerValue]="getPriceParts(item.price * item.quantity).integerValue"
+                  [decimalValue]="getPriceParts(item.price * item.quantity).decimalValue"
+                  [decimalSign]="getPriceParts(item.price * item.quantity).decimalSign"
+                  [currencyLabel]="getPriceParts(item.price * item.quantity).currencyLabel">
+                </skapa-price>
+              </div>
+
+              <button
+                type="button"
+                class="delete-btn"
+                (click)="removeItem(item.id)"
+                attr.aria-label="{{ translations().buybackList.removeItem }}"
+              > 
+              <skapa-icon    slot="icon"
+              icon="trash-can">
+             
+              </skapa-icon>
+              </button>
+            </div>
+          </div>
+        </div>
+      }
+    </div>
+
+    <!-- Summary -->
+    <div class="buyback-sidebar__summary">
+      <div class="summary-row">
+        <span class="summary-label">{{ translations().buybackList.totalEstimate }}:</span>
+        <skapa-price
+          class="summary-value summary-value--total"
+          size="medium"
+          currency-position="leading"
+          currency-spacing="thin"
+          [integerValue]="getPriceParts(totalValue()).integerValue"
+          [decimalValue]="getPriceParts(totalValue()).decimalValue"
+          [decimalSign]="getPriceParts(totalValue()).decimalSign"
+          [currencyLabel]="getPriceParts(totalValue()).currencyLabel">
+        </skapa-price>
+      </div>
+
+      <div class="summary-row summary-row--family">
+        <span class="summary-label">{{ translations().buybackList.familyMemberPrice }}:</span>
+        <skapa-price
+          class="summary-value"
+          size="medium"
+          currency-position="leading"
+          currency-spacing="thin"
+          [integerValue]="getPriceParts(totalFamilyValue()).integerValue"
+          [decimalValue]="getPriceParts(totalFamilyValue()).decimalValue"
+          [decimalSign]="getPriceParts(totalFamilyValue()).decimalSign"
+          [currencyLabel]="getPriceParts(totalFamilyValue()).currencyLabel">
+        </skapa-price>
+      </div>
+
+      <button
+        type="button"
+        class="btn btn-primary btn-continue"
+        (click)="continueToSummary()"
+      >
+        {{ translations().buybackList.continueToOffer }}
+      </button>
+    </div>
+  }
+</div>

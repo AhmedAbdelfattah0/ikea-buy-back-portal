@@ -1,0 +1,70 @@
+<!-- Condition Selector Side Modal using SKAPA Sheet -->
+<skapa-sheet
+  style="z-index: 201;"
+  attr.aria-label="{{ translations().conditionAssessment.title }}"
+  size="small"
+  [open]="isOpen()"
+  (closerequest)="close()"
+>
+  <skapa-modal-header slot="header">
+    <span slot="closebutton-label">{{ translations().common.close }}</span>
+  </skapa-modal-header>
+
+  @if (selectedProduct()) {
+  
+    <!-- Condition Selection Title -->
+    <div class="condition-modal__title">
+      <h2>{{ translations().conditionAssessment.title }}</h2>
+      <p class="condition-subtitle">{{ translations().conditionAssessment.selectCondition }}</p>
+    </div>
+
+    <!-- Condition Options -->
+    <div class="condition-options">
+      @for (conditionOption of conditions; track conditionOption.value) {
+        <button
+          type="button"
+          class="condition-option"
+          [class.selected]="selectedCondition() === conditionOption.value"
+          (click)="selectCondition(conditionOption.value)"
+        >
+          <div class="condition-icon">
+            <img
+              [src]="conditionOption.iconUrl"
+              [alt]="translations().conditionAssessment[conditionOption.translationKey]"
+              class="condition-icon-img"
+            />
+          </div>
+          <div class="condition-text">
+            <h3 class="condition-name">{{ translations().conditionAssessment[conditionOption.translationKey] }}</h3>
+            <p class="condition-description">{{ translations().conditionAssessment[conditionOption.descriptionKey] }}</p>
+          </div>
+          <div class="condition-radio" hidden>
+            <span class="radio-circle" [class.checked]="selectedCondition() === conditionOption.value"></span>
+          </div>
+        </button>
+      }
+    </div>
+
+    <!-- Info Message -->
+    <div class="condition-modal__info">
+      <p>{{ translations().conditionAssessment.conditionRequired }}</p>
+    </div>
+
+    <!-- Actions -->
+    <div class="condition-modal__actions">
+      <skapa-button  class="btn" variant="secondary"
+  
+        (click)="close()"
+      >
+        {{ translations().common.cancel }}
+    </skapa-button>
+    
+
+      <skapa-button class="btn" variant="emphasised"   [disabled]="!canSubmit()"
+      (click)="confirmSelection()">
+        {{ translations().productDiscovery.addToBuyback }}
+
+     </skapa-button>
+    </div>
+  }
+</skapa-sheet>

@@ -1,0 +1,122 @@
+@use '../../../../assets/global/variables' as *;
+@use '../../../../assets/global/mixins' as *;
+
+.modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  @include flex-center;
+  z-index: $z-index-modal-backdrop;
+  animation: fadeIn 0.2s ease;
+  overflow-y: auto;
+  padding: $spacing-lg;
+}
+
+.modal-container {
+  background: $color-white;
+  border-radius: $border-radius-md;
+  @include box-shadow('lg');
+  max-height: 90vh;
+  overflow-y: auto;
+  animation: slideInUp 0.3s ease;
+  width: 100%;
+
+  &.modal-small {
+    max-width: 400px;
+  }
+
+  &.modal-medium {
+    max-width: 600px;
+  }
+
+  &.modal-large {
+    max-width: 900px;
+  }
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: $spacing-lg;
+  border-bottom: 1px solid $color-border;
+}
+
+.modal-heading {
+  @include heading-2;
+  margin: 0;
+}
+
+.modal-close-button {
+  background: none;
+  border: none;
+  font-size: 32px;
+  line-height: 1;
+  cursor: pointer;
+  color: $color-text-secondary;
+  padding: 0;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: $border-radius;
+  transition: all $transition-fast;
+
+  &:hover {
+    background: $color-background-light;
+    color: $color-text;
+  }
+
+  &:focus {
+    outline: 2px solid $color-primary;
+    outline-offset: 2px;
+  }
+}
+
+.modal-content {
+  padding: $spacing-lg;
+  min-height: 100px;
+}
+
+.modal-actions {
+  padding: $spacing-lg;
+  border-top: 1px solid $color-border;
+  display: flex;
+  gap: $spacing-md;
+  justify-content: flex-end;
+
+  &:empty {
+    display: none;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideInUp {
+  from {
+    transform: translateY(50px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+// RTL Support
+[dir='rtl'] {
+  .modal-actions {
+    justify-content: flex-start;
+  }
+}

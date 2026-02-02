@@ -1,0 +1,42 @@
+<!-- Product Grid -->
+<div class="product-grid">
+  @if (isLoading()) {
+    <!-- Loading skeleton -->
+    <div class="product-grid__loading">
+      <p>{{ translations().common.loading }}...</p>
+    </div>
+  } @else if (hasProducts()) {
+    <!-- Product count -->
+    <div class="product-grid__header">
+      <h3 class="product-count">
+        {{ productCount() }} {{ translations().productDiscovery.productsFound }}
+      </h3>
+    </div>
+
+    <!-- Products -->
+    <div class="product-list">
+      @for (product of products(); track product.id) {
+        <div class="product-card" (click)="selectProduct(product)" [ngClass]="{ 'active': isSelectedProduct(product) }">
+          <div class="product-card__image">
+            <img
+              [src]="product.thumbnailUrl"
+              [alt]="product.name"
+              class="product-img"
+            />
+          </div>
+          <div class="product-card__info">
+            <h4 class="product-name">{{ product.name }}</h4>
+            <skapa-product-identifier label="Label" class="product-number">{{ product.productNumber }}</skapa-product-identifier>
+            <p class="product-description">{{ product.description }}</p>
+
+          </div>
+        </div>
+      }
+    </div>
+  } @else {
+    <!-- No products -->
+    <div class="product-grid__empty">
+      <p>{{ translations().productDiscovery.noResults }}</p>
+    </div>
+  }
+</div>

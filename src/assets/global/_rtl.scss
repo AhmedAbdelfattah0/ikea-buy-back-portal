@@ -1,0 +1,240 @@
+// IKEA Buyback Portal - RTL (Right-to-Left) Support for Arabic
+
+@use 'variables' as *;
+
+// =============================================================================
+// RTL DIRECTION SETUP
+// =============================================================================
+
+[dir='rtl'] {
+  direction: rtl;
+  text-align: start;
+
+  // Font family for Arabic
+  body,
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6,
+  p,
+  span,
+  div,
+  button,
+  input,
+  textarea,
+  select {
+    font-family: $font-stack-arabic;
+  }
+}
+
+// =============================================================================
+// RTL SPECIFIC OVERRIDES
+// =============================================================================
+
+// Lists
+[dir='rtl'] ul,
+[dir='rtl'] ol {
+  padding-left: 0;
+  padding-right: $spacing-xl;
+}
+
+// Floating elements
+[dir='rtl'] .float-start {
+  float: right !important;
+}
+
+[dir='rtl'] .float-end {
+  float: left !important;
+}
+
+// Text alignment
+[dir='rtl'] .text-start {
+  text-align: right !important;
+}
+
+[dir='rtl'] .text-end {
+  text-align: left !important;
+}
+
+// Borders
+[dir='rtl'] .border-start {
+  border-left: 0 !important;
+  border-right: 1px solid $border-color !important;
+}
+
+[dir='rtl'] .border-end {
+  border-right: 0 !important;
+  border-left: 1px solid $border-color !important;
+}
+
+// Margins (using logical properties, but keeping for legacy support)
+[dir='rtl'] .ms-auto {
+  margin-left: auto !important;
+  margin-right: 0 !important;
+}
+
+[dir='rtl'] .me-auto {
+  margin-right: auto !important;
+  margin-left: 0 !important;
+}
+
+// Padding (using logical properties, but keeping for legacy support)
+[dir='rtl'] .ps-auto {
+  padding-left: auto !important;
+  padding-right: 0 !important;
+}
+
+[dir='rtl'] .pe-auto {
+  padding-right: auto !important;
+  padding-left: 0 !important;
+}
+
+// =============================================================================
+// RTL ANIMATIONS & TRANSFORMS
+// =============================================================================
+
+[dir='rtl'] .rotate-90 {
+  transform: rotate(-90deg) !important;
+}
+
+[dir='rtl'] .rotate-180 {
+  transform: rotate(-180deg) !important;
+}
+
+[dir='rtl'] .rotate-270 {
+  transform: rotate(-270deg) !important;
+}
+
+// Flip icons/images horizontally for RTL
+[dir='rtl'] .flip-horizontal {
+  transform: scaleX(-1);
+}
+
+// =============================================================================
+// RTL SPECIFIC COMPONENT OVERRIDES
+// =============================================================================
+
+// Modal positioning
+[dir='rtl'] .modal {
+  text-align: right;
+}
+
+// Dropdown positioning
+[dir='rtl'] .dropdown-menu {
+  right: auto;
+  left: 0;
+  text-align: right;
+}
+
+// Tooltips
+[dir='rtl'] .tooltip {
+  text-align: right;
+}
+
+// Breadcrumbs
+[dir='rtl'] .breadcrumb {
+  li {
+    &::before {
+      content: '\\';
+      margin: 0 $spacing-sm;
+    }
+  }
+}
+
+// Carousel navigation
+[dir='rtl'] .carousel-control-prev {
+  left: auto;
+  right: 0;
+}
+
+[dir='rtl'] .carousel-control-next {
+  right: auto;
+  left: 0;
+}
+
+// =============================================================================
+// RTL FORM ELEMENTS
+// =============================================================================
+
+[dir='rtl'] input[type='checkbox'],
+[dir='rtl'] input[type='radio'] {
+  margin-left: $spacing-sm;
+  margin-right: 0;
+}
+
+[dir='rtl'] label {
+  text-align: right;
+}
+
+// Number inputs in RTL
+[dir='rtl'] input[type='number'] {
+  text-align: left; // Keep numbers left-to-right
+  direction: ltr;
+}
+
+// =============================================================================
+// RTL LAYOUT UTILITIES
+// =============================================================================
+
+// Flexbox in RTL
+[dir='rtl'] .flex-row-reverse {
+  flex-direction: row !important;
+}
+
+[dir='rtl'] .flex-row {
+  flex-direction: row-reverse !important;
+}
+
+// Grid in RTL (auto-handled by CSS Grid, but keeping for specific cases)
+[dir='rtl'] .grid-rtl {
+  direction: rtl;
+}
+
+// =============================================================================
+// RTL SCROLLING
+// =============================================================================
+
+[dir='rtl'] .scroll-horizontal {
+  direction: ltr; // Keep horizontal scroll left-to-right
+}
+
+// =============================================================================
+// RTL SPECIFIC CLASSES
+// =============================================================================
+
+.rtl-only {
+  display: none;
+
+  [dir='rtl'] & {
+    display: block;
+  }
+}
+
+.ltr-only {
+  display: block;
+
+  [dir='rtl'] & {
+    display: none;
+  }
+}
+
+// =============================================================================
+// RTL ICON ADJUSTMENTS
+// =============================================================================
+
+[dir='rtl'] {
+  // Icons that should flip in RTL
+  .icon-arrow-right,
+  .icon-arrow-left,
+  .icon-chevron-right,
+  .icon-chevron-left {
+    transform: scaleX(-1);
+  }
+
+  // Icons that should NOT flip (keep as-is)
+  .icon-no-flip {
+    transform: none !important;
+  }
+}

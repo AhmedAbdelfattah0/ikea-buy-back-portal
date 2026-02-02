@@ -1,0 +1,63 @@
+<skapa-prompt
+  style="z-index: 105;"
+  [open]="isOpen()"
+  (closerequest)="closeButtonClick()">
+
+  <skapa-modal-header slot="header">
+    <span slot="closebutton-label">{{ translations().modal.CLOSE_DIALOG }}</span>
+  </skapa-modal-header>
+
+  @if(modalData()?.title) {
+    <h2 slot="title" class="title-for-error-case" [dir]="direction()">
+      {{ translations().modal[modalData()?.title || ''] || modalData()?.title }}
+    </h2>
+  } @else if(modalData()?.errType) {
+    <h2 slot="title" class="title-for-error-case" [dir]="direction()">
+      {{ translations().modal[modalData()?.errType || ''] || modalData()?.errType }}
+    </h2>
+  }
+
+  <div class="max-width">
+    {{ translations().modal[modalData()?.disc || ''] || modalData()?.disc }}
+  </div>
+
+  @if(modalData()?.showInput) {
+    <div class="password-input-container">
+      <skapa-input-field auto-id="password">
+        <label slot="label">{{ translations().modal.PASSWORD }}</label>
+        <input
+          [formControl]="inputValue"
+          name="password"
+          [type]="showPassword === false ? 'password' : 'text'"
+          required
+          minlength="8">
+        <skapa-icon-button slot="action" (click)="showPassword = !showPassword">
+          @if(!showPassword) {
+            <skapa-icon slot="icon" icon="visibility-show"></skapa-icon>
+          }
+          @if(showPassword) {
+            <skapa-icon slot="icon" icon="visibility-hide"></skapa-icon>
+          }
+          <span>{{ translations().modal.REVEAL_PASSWORD }}</span>
+        </skapa-icon-button>
+        <skapa-helper-text slot="helper"></skapa-helper-text>
+      </skapa-input-field>
+    </div>
+  }
+
+  <skapa-modal-footer
+    slot="footer"
+    (primary)="confirmButtonClick(modalData()?.errType || '')"
+    (secondary)="closeButtonClick()"
+    [primaryLead]="true">
+
+    @if(modalData()?.primaryBtn?.isVisible) {
+      {{ translations().modal[modalData()?.primaryBtn?.btnText || ''] || modalData()?.primaryBtn?.btnText }}
+    }
+
+    @if(modalData()?.secondaryBtn?.isVisible) {
+      <span slot="secondary">{{ translations().modal[modalData()?.secondaryBtn?.btnText || ''] || modalData()?.secondaryBtn?.btnText }}</span>
+    }
+
+  </skapa-modal-footer>
+</skapa-prompt>

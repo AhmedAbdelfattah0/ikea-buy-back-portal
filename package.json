@@ -1,0 +1,62 @@
+{
+  "name": "buyback-portal",
+  "version": "0.0.0",
+  "scripts": {
+    "ng": "ng",
+    "start": "ng serve",
+    "build": "ng build",
+    "watch": "ng build --watch --configuration development",
+    "test": "ng test",
+    "sa-qa": "ng build --base-href=/sa/en/buyback/ --c=sa-qa",
+    "sa-qa-ar": "ng build --base-href=/sa/ar/buyback/ --c=sa-qa-ar",
+    "sa-prod": "ng build --base-href=/sa/en/buyback/ --c=sa-prod",
+    "sa-prod-ar": "ng build --base-href=/sa/ar/buyback/ --c=sa-prod-ar",
+    "bh-qa": "ng build --base-href=/bh/en/buyback/ --c=bh-qa",
+    "bh-qa-ar": "ng build --base-href=/bh/ar/buyback/ --c=bh-qa-ar",
+    "bh-prod": "ng build --base-href=/bh/en/buyback/ --c=bh-prod",
+    "bh-prod-ar": "ng build --base-href=/bh/ar/buyback/ --c=bh-prod-ar"
+  },
+  "prettier": {
+    "printWidth": 100,
+    "singleQuote": true,
+    "overrides": [
+      {
+        "files": "*.html",
+        "options": {
+          "parser": "angular"
+        }
+      }
+    ]
+  },
+  "private": true,
+  "packageManager": "npm@10.9.2",
+  "dependencies": {
+    "@angular/common": "^21.1.0",
+    "@angular/compiler": "^21.1.0",
+    "@angular/core": "^21.1.0",
+    "@angular/forms": "^21.1.0",
+    "@angular/platform-browser": "^21.1.0",
+    "@angular/router": "^21.1.0",
+    "@ingka/button-webc": "^0.13.4",
+    "@ingka/checkbox-webc": "^0.6.2",
+    "@ingka/combobox-webc": "^0.3.5",
+    "@ingka/icon-webc": "^0.13.4",
+    "@ingka/input-field-webc": "^0.9.4",
+    "@ingka/modal-webc": "^0.12.5",
+    "@ingka/price-webc": "^0.9.4",
+    "@ingka/product-identifier-webc": "^0.7.2",
+    "@ingka/quantity-stepper-webc": "^0.11.4",
+    "@ingka/search-webc": "^0.0.4",
+    "@ingka/toast-webc": "^0.12.4",
+    "rxjs": "~7.8.0",
+    "tslib": "^2.3.0"
+  },
+  "devDependencies": {
+    "@angular/build": "^21.1.1",
+    "@angular/cli": "^21.1.1",
+    "@angular/compiler-cli": "^21.1.0",
+    "jsdom": "^27.1.0",
+    "typescript": "~5.9.2",
+    "vitest": "^4.0.8"
+  }
+}

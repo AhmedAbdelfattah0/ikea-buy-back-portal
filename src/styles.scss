@@ -1,0 +1,105 @@
+/* IKEA Buyback Portal - Global Styles */
+
+// Import global SCSS files
+@use 'assets/global/variables' as *;
+@use 'assets/global/mixins' as *;
+@use 'assets/global/common' as *;
+@use 'assets/global/rtl' as *;
+
+// =============================================================================
+// KEYFRAME ANIMATIONS
+// =============================================================================
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideInUp {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideInDown {
+  from {
+    transform: translateY(-20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+// =============================================================================
+// GLOBAL APPLICATION STYLES
+// =============================================================================
+
+// App root
+
+app-root {
+  display: block;
+  min-height: 100vh;
+}
+
+// Main content wrapper
+.app-content {
+  min-height: calc(100vh - #{$header-height} - #{$footer-height});
+  padding: $spacing-xl 0;
+
+  @include respond-max('md') {
+    padding: $spacing-base 0;
+  }
+}
+
+// Loading states
+.loading {
+  @include flex-center;
+  min-height: 200px;
+}
+
+.loading-spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid $background-gray;
+  border-top-color: $ikea-blue;
+  border-radius: $border-radius-round;
+  animation: spin 1s linear infinite;
+}
+
+// =============================================================================
+// CUSTOM SCROLLBAR
+// =============================================================================
+
+* {
+  @include scrollbar-custom;
+}

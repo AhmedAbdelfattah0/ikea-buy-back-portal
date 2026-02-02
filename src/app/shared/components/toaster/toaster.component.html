@@ -1,0 +1,17 @@
+@if(toasterData().isVisible ) {
+   <skapa-toast
+    [dir]="direction()"
+    id="buyback-toast"
+    [show]="toasterData().isVisible"
+    (skapa-toast-dismissed)="afterDismiss()">
+    @if(toasterData().Message) {
+      <span>{{ toasterData().Message }} </span>
+    }
+    {{ translations().toaster[toasterData().toasterType] }}
+    <!-- @if(toasterData().viewLink?.isVisible) {
+      <span slot="action">
+        <a [routerLink]="toasterData().viewLink?.link">{{ translations().toaster.VIEW }}</a>
+      </span>
+    } -->
+  </skapa-toast>
+}

@@ -1,0 +1,32 @@
+@use '../../../../../assets/global/variables' as *;
+@use '../../../../../assets/global/mixins' as *;
+
+.search-page {
+  padding: $spacing-xl 0;
+  min-height: calc(100vh - 200px);
+}
+
+.search-header {
+  text-align: center;
+  margin-bottom: $spacing-xxl;
+
+  h1 {
+    color: $text-primary;
+    margin-bottom: $spacing-base;
+  }
+
+  p {
+    color: $text-secondary;
+    font-size: $font-size-large;
+  }
+}
+
+.search-content {
+  @include flex-center;
+  min-height: 400px;
+}
+
+.placeholder-text {
+  color: $text-tertiary;
+  font-size: $font-size-medium;
+}

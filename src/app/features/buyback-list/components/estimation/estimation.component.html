@@ -1,0 +1,212 @@
+<div class="estimation-page">
+  <!-- Page Title -->
+  <h1 class="page-title">{{ translations().productDiscovery.title }}</h1>
+
+  <!-- Estimation Header -->
+  <div class="estimation-header">
+    <h2 class="estimation-title">{{ translations().estimation.title }}</h2>
+    <p class="estimation-description">{{ translations().estimation.description }}</p>
+  </div>
+
+  <!-- Back Button -->
+  <button type="button" class="back-btn" (click)="onBack()">
+    <skapa-icon icon="chevron-left-small"></skapa-icon>
+    {{ translations().common.back }}
+  </button>
+
+  <!-- Items List -->
+  <div class="estimation-items">
+    @for (item of items(); track item.id) {
+      <div class="estimation-item">
+        <div class="estimation-item__image">
+          <img [src]="item.product.thumbnailUrl" [alt]="item.product.name" class="item-thumbnail" />
+        </div>
+
+        <div class="estimation-item__content">
+          <div class="estimation-item__header">
+            <div class="estimation-item__info">
+              <h3 class="item-name">{{ item.product.name }}</h3>
+              <p class="item-description">{{ item.product.description }}</p>
+              <p class="item-condition">{{ getConditionLabel(item.condition) }}</p>
+            </div>
+            <skapa-price
+              class="item-price"
+              size="small"
+              currency-position="leading"
+              currency-spacing="thin"
+              [integerValue]="getPriceParts(item.price * item.quantity).integerValue"
+              [decimalValue]="getPriceParts(item.price * item.quantity).decimalValue"
+              [decimalSign]="getPriceParts(item.price * item.quantity).decimalSign"
+              [currencyLabel]="getPriceParts(item.price * item.quantity).currencyLabel">
+            </skapa-price>
+          </div>
+
+          <div class="estimation-item__actions">
+            <skapa-quantity-stepper
+              [attr.min-value]="1"
+              [attr.max-value]="99"
+              [attr.default-value]="item.quantity"
+              (skapa-quantity-stepper-change)="onQuantityChange(item.id, $event)"
+            >
+              <span slot="input-label">{{ translations().common.edit }}</span>
+              <span slot="plus-label">{{ translations().common.next }}</span>
+              <span slot="minus-label">{{ translations().common.previous }}</span>
+            </skapa-quantity-stepper>
+            <button type="button" class="remove-btn" (click)="removeItem(item.id)">
+              {{ translations().estimation.removeProduct }}
+            </button>
+          </div>
+        </div>
+      </div>
+    }
+  </div>
+
+  <!-- Total -->
+  <div class="estimation-total">
+    <span class="total-label">Total</span>
+    <skapa-price
+      class="total-price"
+      size="medium"
+      currency-position="leading"
+      currency-spacing="thin"
+      [integerValue]="getPriceParts(totalValue()).integerValue"
+      [decimalValue]="getPriceParts(totalValue()).decimalValue"
+      [decimalSign]="getPriceParts(totalValue()).decimalSign"
+      [currencyLabel]="getPriceParts(totalValue()).currencyLabel">
+    </skapa-price>
+  </div>
+
+  <!-- Requirements -->
+  <div class="requirements-section">
+    <h2 class="requirements-title">{{ translations().estimation.requirementsTitle }}</h2>
+    <p class="requirements-description">{{ translations().estimation.requirementsDescription }}</p>
+
+    <div class="requirement">
+      <h3 class="requirement-title"><span class="requirement-number">1.</span> {{ translations().estimation.requirementClean }}</h3>
+      <p class="requirement-description">{{ translations().estimation.requirementCleanDescription }}</p>
+    </div>
+
+    <div class="requirement">
+      <h3 class="requirement-title"><span class="requirement-number">2.</span> {{ translations().estimation.requirementAssembled }}</h3>
+      <p class="requirement-description">{{ translations().estimation.requirementAssembledDescription }}</p>
+    </div>
+
+    <div class="requirement">
+      <h3 class="requirement-title"><span class="requirement-number">3.</span> {{ translations().estimation.requirementSticker }}</h3>
+      <p class="requirement-description">{{ translations().estimation.requirementStickerDescription }}</p>
+    </div>
+
+    <!-- IKEA Sticker Example -->
+    <div class="sticker-example">
+      <div class="sticker-label">
+        <div class="sticker-label__top">
+          <span class="sticker-made">Made in Poland</span>
+          <div class="sticker-ikea-logo">IKEA</div>
+        </div>
+        <div class="sticker-label__body">
+          <span class="sticker-name">BEKANT</span>
+          <span class="sticker-number">20564</span>
+        </div>
+        <div class="sticker-label__bottom">
+          <span class="sticker-info">IKEA of Sweden AB</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Ready to Sell Section -->
+  <div class="sell-section">
+    <h2 class="sell-title">{{ translations().estimation.readyToSell }}</h2>
+
+    <div class="form-group">
+      <skapa-input-field [attr.error]="email() && !isEmailValid() ? 'true' : null">
+        <label slot="label">{{ translations().submission.email }}</label>
+        <input type="email" [value]="email()" (input)="onEmailInput($event)" required>
+      </skapa-input-field>
+      @if (email() && !isEmailValid()) {
+        <skapa-helper-text type="error">
+          {{ translations().validation.invalidEmail }}
+        </skapa-helper-text>
+      }
+    </div>
+
+    <div class="form-group">
+      <label class="addr__label">{{ translations().submission.storeLocation }}</label>
+      <skapa-combobox auto-id="store-combobox" filtering="">
+        <input
+          slot="input"
+          id="store-combobox-input"
+          role="combobox"
+          aria-controls="store-combobox-listbox"
+          aria-expanded="false"
+          aria-autocomplete="list"
+          aria-haspopup="listbox"
+          tabindex="0"
+          [attr.placeholder]="translations().submission.selectStore"
+        />
+
+        <skapa-helper-text slot="helper" class="invalid-feedback custom-error">
+          @if (!selectedStore() && privacyAccepted()) {
+            <span>{{ translations().validation.required }}</span>
+          }
+        </skapa-helper-text>
+
+        <skapa-listbox
+          slot="listbox"
+          id="store-combobox-listbox"
+          aria-labelledby="store-combobox-input"
+          controlled=""
+          tabindex="-1">
+
+          <skapa-listbox-menuitem (click)="onStoreSelected(null)">
+            {{ translations().submission.selectStore }}
+          </skapa-listbox-menuitem>
+
+          @for (store of stores; track store.id) {
+            <skapa-listbox-menuitem (click)="onStoreSelected(store.id)">
+              {{ store.name }}
+            </skapa-listbox-menuitem>
+          }
+        </skapa-listbox>
+      </skapa-combobox>
+    </div>
+
+    <skapa-checkbox-group auto-id="privacy-checkbox">
+      <input
+        type="checkbox"
+        id="privacy-checkbox-input"
+        name="privacy-checkbox"
+        [checked]="privacyAccepted()"
+        (change)="onPrivacyChange($event)"
+      />
+      <label for="privacy-checkbox-input">
+        {{ translations().estimation.privacyNotice }}
+        <a [href]="privacyPolicyUrl" class="privacy-link" target="_blank">{{ translations().estimation.readPrivacyPolicy }}</a>
+      </label>
+    </skapa-checkbox-group>
+
+    @if (submissionError()) {
+      <div class="error-message">
+        {{ submissionError() }}
+      </div>
+    }
+
+    <button
+      type="button"
+      class="btn-sell-back"
+      (click)="sellBack()"
+      [disabled]="!isFormValid() || isSubmitting()"
+      [class.btn-loading]="isSubmitting()"
+    >
+      @if (isSubmitting()) {
+        {{ translations().submission.submitting }}
+      } @else {
+        {{ translations().estimation.sellBack }}
+      }
+    </button>
+
+    <button type="button" class="btn-go-back" (click)="goBackToHomepage()">
+      {{ translations().estimation.goBackToHomepage }}
+    </button>
+  </div>
+</div>

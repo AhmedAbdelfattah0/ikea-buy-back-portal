@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <base href="/">
+  <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no">
+  <link rel="icon" type="image/ico" href="./assets/images/favicon.ico">
+  <link rel="preconnect" href="https://www.ikea.com">
+  <link rel="stylesheet" href="https://www.ikea.com/global/assets/fonts/en/fonts.css">
+
+  <script defer>
+    var isSaudi = window.location.href.includes('/sa/')
+
+    function getCookie(cname) {
+      let name = cname + "=";
+      let decodedCookie = decodeURIComponent(document.cookie);
+      let ca = decodedCookie.split(';');
+      for (let i = 0; i < ca.length; i++) {
+        let c = ca[i];
+        while (c.charAt(0) == ' ') {
+          c = c.substring(1);
+        }
+        if (c.indexOf(name) == 0) {
+          return JSON.parse(c.split('=')[1].replaceAll("'", ""))
+        }
+      }
+      return "";
+    }
+
+    var ikea_cookieconsent_bh = getCookie('ikea_cookieconsent_bh');
+    var ikea_cookieconsent_sa = getCookie('ikea_cookieconsent_sa');
+  </script>
+</head>
+
+<body style="text-align: initial;">
+  <app-root></app-root>
+   <!-- <div id="root"></div> -->
+
+  <noscript>Please enable JavaScript to continue using this application.</noscript>
+</body>
+
+</html>
