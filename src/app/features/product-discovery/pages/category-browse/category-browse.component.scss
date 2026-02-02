@@ -167,11 +167,7 @@
     grid-template-columns: 1fr;
   }
 
-  .categories-section {
-    border-inline-end: none;
-    border-block-end: 1px solid #dfdfdf;
-    max-height: 400px;
-  }
+  
 }
 
 @media (max-width: 768px) {
@@ -184,9 +180,7 @@
     flex-direction: column;
   }
 
-  .categories-section {
-    max-height: 300px;
-  }
+  
 }
 
 // RTL Support
