@@ -2,63 +2,68 @@
   <div class="confirmation-container">
     <!-- Left Content Section -->
     <div class="confirmation-content">
-      <h1 class="page-title">{{ translations().confirmation.title }}</h1>
+      <div class="confirmation-content-inner">
+        <h1 class="main-heading">{{ translations().productDiscovery.title }}</h1>
+        <h2 class="page-title">{{ translations().confirmation.title }}</h2>
 
-      <div class="quotation-box">
-        <span class="quotation-label">{{ translations().confirmation.quotationLabel }}</span>
-        <button class="copy-btn" (click)="copyQuotationNumber()" [attr.aria-label]="translations().common.copy">
-          <skapa-icon icon="copy"></skapa-icon>
-        </button>
-        <span class="quotation-number">#{{ confirmationNumber }}</span>
-      </div>
+        <div class="quotation-box">
+          <span class="quotation-label">{{ translations().confirmation.quotationLabel }}</span>
+          <span class="quotation-number">#{{ confirmationNumber }}</span>
+          <skapa-icon-button    (click)="copyQuotationNumber()" [attr.aria-label]="translations().common.copy" variant="tertiary" size="small">
+            <skapa-icon  slot="icon" icon="copy"></skapa-icon>
+          </skapa-icon-button>
+        </div>
 
-      <div class="next-steps">
-        <div class="step">
-          <div class="step-number">1</div>
-          <div class="step-content">
-            <p class="step-text">{{ translations().confirmation.step1 }}</p>
+        <div class="next-steps">
+          <div class="step">
+            <div class="step-number">1</div>
+            <div class="step-content">
+              <p class="step-text">{{ translations().confirmation.step1 }}</p>
+            </div>
+          </div>
+
+          <div class="step">
+            <div class="step-number">2</div>
+            <div class="step-content">
+              <p class="step-text">{{ translations().confirmation.step2 }}</p>
+            </div>
+          </div>
+
+          <div class="step">
+            <div class="step-number">3</div>
+            <div class="step-content">
+              <p class="step-text">{{ translations().confirmation.step3 }}</p>
+            </div>
+          </div>
+
+          <div class="step">
+            <div class="step-number">4</div>
+            <div class="step-content">
+              <p class="step-text">{{ translations().confirmation.step4 }}</p>
+            </div>
           </div>
         </div>
 
-        <div class="step">
-          <div class="step-number">2</div>
-          <div class="step-content">
-            <p class="step-text">{{ translations().confirmation.step2 }}</p>
-          </div>
+        <div class="action-buttons">
+          <skapa-button     (click)="estimateAnother()">
+            {{ translations().confirmation.estimateAnother }}
+          </skapa-button>
+          <skapa-button variant="secondary" (click)="shareFeedback()">
+            {{ translations().confirmation.shareFeedback }}
+          </skapa-button>
         </div>
-
-        <div class="step">
-          <div class="step-number">3</div>
-          <div class="step-content">
-            <p class="step-text">{{ translations().confirmation.step3 }}</p>
-          </div>
-        </div>
-
-        <div class="step">
-          <div class="step-number">4</div>
-          <div class="step-content">
-            <p class="step-text">{{ translations().confirmation.step4 }}</p>
-          </div>
-        </div>
-      </div>
-
-      <div class="action-buttons">
-        <button type="button" class="btn btn-primary" (click)="estimateAnother()">
-          {{ translations().confirmation.estimateAnother }}
-        </button>
-        <button type="button" class="btn btn-secondary" (click)="shareFeedback()">
-          {{ translations().confirmation.shareFeedback }}
-        </button>
       </div>
     </div>
 
     <!-- Right Image Section -->
     <div class="confirmation-image">
-      <img
-        src="https://www.ikea.com/global/assets/buyback/images/content-factory/large-GC-CF-Buyback-FY24-External-02-crop001_1.jpg"
-        alt="IKEA Buyback"
-        class="hero-image"
-      />
+      <skapa-aspect-ratio-box ratio="square">
+        <img
+          src="https://www.ikea.com/global/assets/buyback/images/content-factory/large-GC-CF-Buyback-FY24-External-02-crop001_1.jpg"
+          alt="IKEA Buyback"
+          class="hero-image"
+        />
+      </skapa-aspect-ratio-box>
     </div>
   </div>
 </div>

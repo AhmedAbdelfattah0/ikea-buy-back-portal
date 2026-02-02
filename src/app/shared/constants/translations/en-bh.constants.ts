@@ -116,12 +116,12 @@ export const EN_BH_TRANSLATIONS: Translation = {
     readPrivacyPolicy: 'Read our Privacy Policy'
   },
   confirmation: {
-    title: 'Your quotation list has been sent',
-    quotationLabel: 'Quotation No.',
-    step1: 'Print the list or keep it on your phone.',
-    step2: 'Visit your nearest IKEA store within 15 days.',
-    step3: 'Show the list to the co-worker at the Returns & Orders desk.',
-    step4: 'The co-worker will evaluate your product(s) and finalize the purchase.',
+    title: 'Great, here\'s what to do next',
+    quotationLabel: 'Quotation no.',
+    step1: 'You will receive your email shortly with the estimate',
+    step2: 'Next bring your fully assembled furniture to IKEA you selected.',
+    step3: 'At store, head to Returns & exchanges area and an IKEA co-worker will do a final evaluation',
+    step4: 'You will receive a store credit in the form of an IKEA refund card. You can use it online or in the store.',
     estimateAnother: 'Estimate another product',
     shareFeedback: 'Share your feedback'
   },

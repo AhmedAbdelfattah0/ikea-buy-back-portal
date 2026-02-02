@@ -20,7 +20,8 @@ import '@ingka/helper-text-webc';
 import '@ingka/combobox-webc';
 import '@ingka/fieldset-webc';
 import '@ingka/checkbox-webc';
-
+import '@ingka/aspect-ratio-box-webc';
+import '@ingka/pill-webc';
 
 /**
  * Base Component Class
