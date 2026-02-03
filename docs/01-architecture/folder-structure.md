@@ -26,80 +26,37 @@ buyback-portal/
 │   │   │       └── api-response.model.ts
 │   │   │
 │   │   ├── features/                       # Feature modules
-│   │   │   ├── product-discovery/
-│   │   │   │   ├── pages/
-│   │   │   │   │   ├── search/
-│   │   │   │   │   │   ├── search.component.ts
-│   │   │   │   │   │   ├── search.component.html
-│   │   │   │   │   │   └── search.component.scss
-│   │   │   │   │   └── category-browse/
-│   │   │   │   │       ├── category-browse.component.ts
-│   │   │   │   │       ├── category-browse.component.html
-│   │   │   │   │       └── category-browse.component.scss
-│   │   │   │   ├── components/             # Feature-specific components
-│   │   │   │   │   ├── search-bar/
-│   │   │   │   │   ├── category-selector/
-│   │   │   │   │   ├── product-grid/
-│   │   │   │   │   └── product-card/
-│   │   │   │   ├── services/               # Feature-specific services
-│   │   │   │   │   ├── product-search.service.ts
-│   │   │   │   │   └── category.service.ts
-│   │   │   │   └── models/                 # Business logic models
-│   │   │   │       ├── product.model.ts
-│   │   │   │       └── category.model.ts
-│   │   │   │
-│   │   │   ├── condition-assessment/       # Product condition selection
-│   │   │   │   ├── components/
+│   │   │   ├── product-discovery/          # Reusable product UI components
+│   │   │   │   ├── components/             # Product-related UI components
+│   │   │   │   │   ├── category-tree/
+│   │   │   │   │   │   ├── category-tree.component.ts
+│   │   │   │   │   │   ├── category-tree.component.html
+│   │   │   │   │   │   └── category-tree.component.scss
 │   │   │   │   │   ├── condition-selector/
-│   │   │   │   │   └── product-condition-item/
-│   │   │   │   ├── services/
-│   │   │   │   │   └── condition.service.ts
-│   │   │   │   └── models/
-│   │   │   │       └── product-condition.model.ts
+│   │   │   │   │   │   ├── condition-selector.component.ts
+│   │   │   │   │   │   ├── condition-selector.component.html
+│   │   │   │   │   │   └── condition-selector.component.scss
+│   │   │   │   │   └── product-grid/
+│   │   │   │   │       ├── product-grid.component.ts
+│   │   │   │   │       ├── product-grid.component.html
+│   │   │   │   │       └── product-grid.component.scss
+│   │   │   │   └── services/               # Product & category services
+│   │   │   │       ├── product.service.ts
+│   │   │   │       └── category.service.ts
 │   │   │   │
-│   │   │   ├── buyback-list/               # Buyback list management
-│   │   │   │   ├── pages/
-│   │   │   │   │   └── buyback-list/
-│   │   │   │   │       ├── buyback-list.component.ts
-│   │   │   │   │       ├── buyback-list.component.html
-│   │   │   │   │       └── buyback-list.component.scss
-│   │   │   │   ├── components/
-│   │   │   │   │   ├── buyback-item/
-│   │   │   │   │   └── buyback-summary/
-│   │   │   │   ├── services/
-│   │   │   │   │   └── buyback-list.service.ts
-│   │   │   │   └── models/
-│   │   │   │       └── buyback-item.model.ts
-│   │   │   │
-│   │   │   ├── offer-calculation/          # Offer calculation logic
-│   │   │   │   ├── components/
-│   │   │   │   │   ├── offer-summary/
-│   │   │   │   │   ├── price-breakdown/
-│   │   │   │   │   └── ikea-family-toggle/
-│   │   │   │   ├── services/
-│   │   │   │   │   └── offer-calculation.service.ts
-│   │   │   │   └── models/
-│   │   │   │       └── offer.model.ts
-│   │   │   │
-│   │   │   └── submission/                 # Submission and confirmation
+│   │   │   └── buyback-list/               # Main single-page application
 │   │   │       ├── pages/
-│   │   │       │   ├── summary/
-│   │   │       │   │   ├── summary.component.ts
-│   │   │       │   │   ├── summary.component.html
-│   │   │       │   │   └── summary.component.scss
-│   │   │       │   └── confirmation/
-│   │   │       │       ├── confirmation.component.ts
-│   │   │       │       ├── confirmation.component.html
-│   │   │       │       └── confirmation.component.scss
+│   │   │       │   └── buyback-list/       # Main SPA page (all views)
+│   │   │       │       ├── buyback-list.component.ts
+│   │   │       │       ├── buyback-list.component.html
+│   │   │       │       └── buyback-list.component.scss
 │   │   │       ├── components/
-│   │   │       │   ├── user-info-form/
-│   │   │       │   ├── submission-review/
-│   │   │       │   └── quotation-display/
-│   │   │       ├── services/
-│   │   │       │   └── submission.service.ts
-│   │   │       └── models/
-│   │   │           ├── submission.model.ts
-│   │   │           └── quotation.model.ts
+│   │   │       │   ├── buyback-sidebar/    # Sidebar with list summary
+│   │   │       │   ├── estimation/         # Estimation view component
+│   │   │       │   └── confirmation/       # Confirmation view component
+│   │   │       └── services/
+│   │   │           ├── buyback-list.service.ts
+│   │   │           └── submission.service.ts
 │   │   │
 │   │   ├── shared/                         # Shared across app
 │   │   │   ├── components/                 # Reusable UI components
@@ -165,41 +122,38 @@ buyback-portal/
 │   │   ├── overview.md
 │   │   ├── folder-structure.md             # This file
 │   │   ├── solid-principles.md
-│   │   ├── component-architecture.md       (pending)
-│   │   ├── state-management.md             (pending)
-│   │   └── dependency-injection.md         (pending)
+│   │   ├── component-architecture.md
+│   │   ├── state-management.md
+│   │   ├── dependency-injection.md
+│   │   └── esi-integration.md
 │   ├── 02-core-concepts/
 │   │   ├── routing-and-localization.md
 │   │   ├── translation-system.md
 │   │   ├── environment-configuration.md
 │   │   ├── base-classes.md
 │   │   └── services-overview.md
-│   ├── 03-features/                        (all pending)
+│   ├── 03-features/
+│   │   ├── buyback-list.md                 # Main SPA documentation
+│   │   ├── confirmation-page.md
 │   │   ├── product-discovery.md
-│   │   ├── condition-assessment.md
-│   │   ├── buyback-list.md
-│   │   ├── offer-calculation.md
 │   │   └── submission-flow.md
 │   ├── 04-ui-components/
 │   │   ├── skapa-integration.md
-│   │   ├── shared-components.md            (pending)
-│   │   └── styling-guide.md                (pending)
+│   │   ├── skapa-packages.md
+│   │   └── shared-components-implementation.md
 │   ├── 05-development-guide/
 │   │   ├── getting-started.md
-│   │   ├── development-workflow.md         (pending)
-│   │   ├── coding-standards.md             (pending)
-│   │   ├── adding-new-features.md          (pending)
-│   │   ├── adding-new-markets.md           (pending)
-│   │   └── troubleshooting.md              (pending)
-│   ├── 06-api-integration/                 (all pending)
+│   │   ├── development-workflow.md
+│   │   ├── adding-new-features.md
+│   │   └── troubleshooting.md
+│   ├── 06-api-integration/                 (pending implementation)
 │   │   ├── api-overview.md
 │   │   ├── mock-services.md
-│   │   ├── http-interceptors.md
-│   │   └── error-handling.md
-│   └── 07-deployment/                      (all pending)
+│   │   └── http-interceptors.md
+│   └── 07-deployment/
 │       ├── build-configurations.md
-│       ├── deployment-guide.md
-│       └── environment-variables.md
+│       ├── build-scripts.md
+│       └── deployment-guide.md
 │
 ├── angular.json                            # Angular CLI configuration
 ├── tsconfig.json                           # TypeScript configuration
@@ -281,93 +235,47 @@ product-discovery/
 
 ### `/src/app/features/` - Feature Breakdown
 
+This application is a **single-page application (SPA)** with all functionality contained in the `buyback-list` page component.
+
 #### 1. `product-discovery/`
 
-**Purpose**: Product search and category browsing functionality.
+**Purpose**: Reusable UI components for product browsing and selection.
+
+**Components**:
+- `category-tree/` - Hierarchical category navigation tree
+- `condition-selector/` - Modal for selecting product condition (Like New, Very Good, Well Used)
+- `product-grid/` - Grid display of products with filtering
+
+**Services**:
+- `product.service.ts` - Product data, search, filtering, sorting
+- `category.service.ts` - Category hierarchy, navigation state
+
+**Note**: This feature has NO pages - only reusable components used by buyback-list.
+
+#### 2. `buyback-list/`
+
+**Purpose**: The main single-page application containing all buyback flow functionality.
 
 **Pages**:
-- `search/` - Main search interface with keyword search
-- `category-browse/` - Hierarchical category navigation
+- `buyback-list/` - **Main SPA page** with three views:
+  1. **Browse View**: Category tree + Product grid + Buyback sidebar
+  2. **Estimation View**: Review items, enter email/store, submit
+  3. **Confirmation View**: Success page with quotation number
 
 **Components**:
-- `search-bar/` - Search input with autocomplete
-- `category-selector/` - Multi-level category tree
-- `product-grid/` - Grid display of products
-- `product-card/` - Individual product card with image, name, code
+- `buyback-sidebar/` - Right sidebar showing selected items and total estimate
+- `estimation/` - In-page estimation and submission form view
+- `confirmation/` - In-page confirmation success view
 
 **Services**:
-- `product-search.service.ts` - Search API, filtering, sorting
-- `category.service.ts` - Category hierarchy, navigation
+- `buyback-list.service.ts` - Manage list state, add/remove items, persist to storage
+- `submission.service.ts` - Submit buyback request, generate quotation number
 
-**Models**:
-- `product.model.ts` - Product validation, formatting
-- `category.model.ts` - Category tree logic
-
-#### 2. `condition-assessment/`
-
-**Purpose**: Product condition selection for buyback pricing.
-
-**Components**:
-- `condition-selector/` - Condition options (Like New, Very Good, Well Used)
-- `product-condition-item/` - Product with selected condition
-
-**Services**:
-- `condition.service.ts` - Condition rules, pricing impact
-
-**Models**:
-- `product-condition.model.ts` - Condition validation, business rules
-
-#### 3. `buyback-list/`
-
-**Purpose**: Managing selected products for buyback.
-
-**Pages**:
-- `buyback-list/` - List of selected items with conditions
-
-**Components**:
-- `buyback-item/` - Individual item in list
-- `buyback-summary/` - Summary of total items and estimate
-
-**Services**:
-- `buyback-list.service.ts` - Add/remove items, persist to storage
-
-**Models**:
-- `buyback-item.model.ts` - Item validation, calculations
-
-#### 4. `offer-calculation/`
-
-**Purpose**: Calculate and display buyback offer.
-
-**Components**:
-- `offer-summary/` - Total offer display
-- `price-breakdown/` - Itemized pricing
-- `ikea-family-toggle/` - Family member discount toggle
-
-**Services**:
-- `offer-calculation.service.ts` - Pricing calculations, API calls
-
-**Models**:
-- `offer.model.ts` - Offer calculation logic, discount rules
-
-#### 5. `submission/`
-
-**Purpose**: Final submission and confirmation flow.
-
-**Pages**:
-- `summary/` - Review screen before submission
-- `confirmation/` - Success page with quotation number
-
-**Components**:
-- `user-info-form/` - Email and store location form
-- `submission-review/` - Review all selected items
-- `quotation-display/` - Display generated quotation number
-
-**Services**:
-- `submission.service.ts` - Submit buyback, generate quotation
-
-**Models**:
-- `submission.model.ts` - Form validation, submission logic
-- `quotation.model.ts` - Quotation generation, formatting
+**View State Management**:
+The main page uses signals to toggle between the three views:
+- `showEstimation` - Boolean to show estimation view
+- `showConfirmation` - Boolean to show confirmation view
+- Default state shows browse view
 
 ### `/src/app/shared/`
 

@@ -1,4 +1,5 @@
 @use "../../../../../assets/global/variables" as *;
+@use "../../../../../assets/global/mixins" as *;
 
 .estimation-page {
   max-width: 695px;
@@ -6,6 +7,10 @@
   padding: 32px 24px 48px;
   font-family: $font-stack-ikea;
   background: #fff;
+
+  @include respond-max('sm') {
+    margin: 0 !important;
+  }
 }
 
 // Page Title
@@ -149,6 +154,12 @@
   skapa-quantity-stepper {
     font-family: $font-stack-ikea;
   }
+
+  @include respond-to('sm') {
+    padding-inline-start: 0;
+   gap: 9px;
+
+   }
 }
 
 .remove-btn {

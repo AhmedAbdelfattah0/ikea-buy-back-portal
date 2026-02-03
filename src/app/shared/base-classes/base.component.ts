@@ -8,6 +8,7 @@ import '@ingka/icon-store/minus';
 import '@ingka/icon-store/plus';
 import '@ingka/icon-store/camera';
 import '@ingka/icon-store/chevron-left-small';
+import '@ingka/icon-store/chevron-right-small';
 import '@ingka/icon-store/trash-can';
 import '@ingka/icon-store/magnifying-glass';
 import '@ingka/icon-store/copy';

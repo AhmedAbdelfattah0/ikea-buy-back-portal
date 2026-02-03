@@ -1,4 +1,4 @@
-import { Component, computed, output, signal } from '@angular/core';
+import { Component, computed, CUSTOM_ELEMENTS_SCHEMA, output, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { BaseComponent } from '../../../../shared/base-classes/base.component';
 import { Category } from '../../../../shared/interfaces/product.interface';
@@ -7,12 +7,15 @@ import { LocaleService } from '../../../../core/services/locale.service';
 
 /**
  * Category Tree Component
- * Displays hierarchical category navigation in side-by-side columns
+ * Displays hierarchical category navigation
+ * - Desktop: Side-by-side columns
+ * - Mobile: Single column with back button navigation
  */
 @Component({
   selector: 'app-category-tree',
   standalone: true,
   imports: [CommonModule],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
   templateUrl: './category-tree.component.html',
   styleUrls: ['./category-tree.component.scss']
 })
@@ -21,6 +24,9 @@ export class CategoryTreeComponent extends BaseComponent {
   selectedLevel1 = signal<Category | null>(null);
   selectedLevel2 = signal<Category | null>(null);
   selectedLevel3 = signal<Category | null>(null);
+
+  // Mobile navigation - tracks which level is currently visible on mobile
+  mobileViewLevel = signal<number>(1); // 1, 2, or 3
 
   // Outputs
   categorySelected = output<Category>();
@@ -41,6 +47,17 @@ export class CategoryTreeComponent extends BaseComponent {
     return selected ? this.categoryService.getChildren(selected.id) : [];
   });
 
+  // Get breadcrumb title for mobile back button
+  mobileBreadcrumbTitle = computed(() => {
+    const level = this.mobileViewLevel();
+    if (level === 2) {
+      return this.selectedLevel1()?.name || '';
+    } else if (level === 3) {
+      return this.selectedLevel2()?.name || '';
+    }
+    return '';
+  });
+
   constructor(
     private categoryService: CategoryService,
     private locale: LocaleService
@@ -56,8 +73,11 @@ export class CategoryTreeComponent extends BaseComponent {
     this.selectedLevel2.set(null);
     this.selectedLevel3.set(null);
 
-    // If no children, this is the final selection
-    if (this.categoryService.getChildren(category.id).length === 0) {
+    // If has children, move to level 2 on mobile
+    if (this.categoryService.getChildren(category.id).length > 0) {
+      this.mobileViewLevel.set(2);
+    } else {
+      // No children, this is the final selection
       this.finalizeSelection(category);
     }
   }
@@ -69,8 +89,11 @@ export class CategoryTreeComponent extends BaseComponent {
     this.selectedLevel2.set(category);
     this.selectedLevel3.set(null);
 
-    // If no children, this is the final selection
-    if (this.categoryService.getChildren(category.id).length === 0) {
+    // If has children, move to level 3 on mobile
+    if (this.categoryService.getChildren(category.id).length > 0) {
+      this.mobileViewLevel.set(3);
+    } else {
+      // No children, this is the final selection
       this.finalizeSelection(category);
     }
   }
@@ -81,6 +104,25 @@ export class CategoryTreeComponent extends BaseComponent {
   selectLevel3Category(category: Category): void {
     this.selectedLevel3.set(category);
     this.finalizeSelection(category);
+  }
+
+  /**
+   * Navigate back to previous level (mobile only)
+   */
+  goBackToLevel1(): void {
+    this.mobileViewLevel.set(1);
+    this.selectedLevel1.set(null);
+    this.selectedLevel2.set(null);
+    this.selectedLevel3.set(null);
+  }
+
+  /**
+   * Navigate back to level 2 (mobile only)
+   */
+  goBackToLevel2(): void {
+    this.mobileViewLevel.set(2);
+    this.selectedLevel2.set(null);
+    this.selectedLevel3.set(null);
   }
 
   /**

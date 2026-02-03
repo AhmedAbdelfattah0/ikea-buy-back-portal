@@ -1,29 +1,46 @@
-# Buyback List
+# Buyback List - Main Single-Page Application
 
 ## Overview
 
-The Buyback List feature manages the collection of products users want to sell back to IKEA. Users can view, edit conditions, remove items, and see the total estimated offer before proceeding to submission.
+The Buyback List feature IS the entire IKEA Buyback Portal application. This is a **single-page application (SPA)** where all functionality is contained in one main component with three state-managed views.
+
+**Important**: This is NOT just a "list" feature - it encompasses the entire buyback flow from product discovery to confirmation.
+
+## Application Architecture
+
+### Single-Page Application Pattern
+
+Instead of multiple routes and pages, this application uses **component state** to toggle between three distinct views:
+
+1. **Browse View** (Default) - Product discovery and selection
+2. **Estimation View** - Review items and submit buyback request
+3. **Confirmation View** - Success page with quotation number
+
+All views exist within the `BuybackListComponent` and switch based on signal state.
 
 ## User Flow
 
 ```
-Items Added to List (from Condition Assessment)
+User lands on /sa/en/buy-back-quote
   ↓
-View Buyback List (two-column browse layout)
+BROWSE VIEW (default state)
+  - Category tree navigation
+  - Product grid with search
+  - Buyback sidebar with selected items
+  - User selects products and conditions
+  - Clicks "Continue to Offer" in sidebar
   ↓
-Manage Items:
-  - View all items
-  - Edit condition / quantity
-  - Remove items
-  - See total estimate
+ESTIMATION VIEW (showEstimation = true)
+  - Review all selected items with prices
+  - Read buyback requirements
+  - Enter email and store location
+  - Click "Submit" or "Back"
   ↓
-Click "Continue to Offer" in sidebar
-  ↓
-Estimation View (in-page, no route change)
-  - Review items + prices
-  - Read requirements
-  - Enter email + store
-  - Submit or go back
+CONFIRMATION VIEW (showConfirmation = true)
+  - Display quotation number (BYB-XXXXXX)
+  - Copy-to-clipboard functionality
+  - Next steps guide
+  - "Estimate Another" resets to Browse View
 ```
 
 ## Feature Structure
@@ -31,465 +48,398 @@ Estimation View (in-page, no route change)
 ```
 features/buyback-list/
 ├── pages/
-│   └── buyback-list/              # Main page: product browse + sidebar
-│       ├── buyback-list.component.ts
-│       ├── buyback-list.component.html
-│       └── buyback-list.component.scss
+│   └── buyback-list/                    # MAIN SPA PAGE (entire app)
+│       ├── buyback-list.component.ts    # State management & view logic
+│       ├── buyback-list.component.html  # Three conditional views
+│       └── buyback-list.component.scss  # Layout styles
 ├── components/
-│   ├── buyback-sidebar/           # Sidebar: items list + price summary
+│   ├── buyback-sidebar/                 # Right sidebar (Browse View)
 │   │   ├── buyback-sidebar.component.ts
 │   │   ├── buyback-sidebar.component.html
 │   │   └── buyback-sidebar.component.scss
-│   └── estimation/                # In-page estimation & submission view
-│       ├── estimation.component.ts
-│       ├── estimation.component.html
-│       └── estimation.component.scss
+│   ├── estimation/                      # Estimation View component
+│   │   ├── estimation.component.ts
+│   │   ├── estimation.component.html
+│   │   └── estimation.component.scss
+│   └── confirmation/                    # Confirmation View component
+│       ├── confirmation.ts
+│       ├── confirmation.html
+│       └── confirmation.scss
 └── services/
-    └── buyback-list.service.ts    # List state + persistence
+    ├── buyback-list.service.ts          # List state + persistence
+    └── submission.service.ts            # Submit buyback + generate quotation
 ```
 
-## Route
+## View State Management
 
-| Path | Component | Description |
-|------|-----------|-------------|
-| `/sa/en/buyback-list` | BuybackListComponent | Buyback list page |
+### State Signals
 
-## Components
+The main `BuybackListComponent` uses three signals to control views:
 
-### 1. Buyback List Page Component
-
-**Purpose**: Main entry route. Renders a two-column browse layout — left panel has category tree, search, and product grid; right panel is the `BuybackSidebarComponent`. When a user taps a product, the `ConditionSelectorComponent` modal opens.
-
-**Location**: `features/buyback-list/pages/buyback-list/`
-
-**State**:
 ```typescript
 export class BuybackListComponent extends BaseComponent {
-  @ViewChild(ConditionSelectorComponent) conditionSelector!: ConditionSelectorComponent;
+  // View state signals
+  showEstimation = signal<boolean>(false);      // Show estimation view
+  showConfirmation = signal<boolean>(false);    // Show confirmation view
+  confirmationNumber = signal<string>('');      // Generated quotation number
+  searchQuery = signal<string>('');             // Search filter
 
-  // Local state
-  searchQuery = signal<string>('');
-
-  // Computed from services
-  translations = computed(() => this.locale.translations());
+  // Computed signals
   selectedCategory = computed(() => this.categoryService.selectedCategory());
   filteredProducts = computed(() => this.productService.filteredProducts());
-  isLoading = computed(() => this.productService.isLoading());
-
-  constructor(
-    private categoryService: CategoryService,
-    private productService: ProductService,
-    private locale: LocaleService
-  ) {
-    super();
-  }
 }
 ```
 
-**Key Methods**:
+### View Transitions
+
 ```typescript
-// Opens the condition-selector modal for the tapped product
-onProductSelected(product: Product): void {
-  this.conditionSelector.open(product);
+// Default: Browse View
+@if (!showEstimation() && !showConfirmation()) {
+  <!-- Category tree + Product grid + Sidebar -->
 }
 
-onCategorySelected(category: Category): void {
-  this.productService.setCategoryFilter(category.id);
+// Estimation View
+@if (showEstimation() && !showConfirmation()) {
+  <app-estimation (back)="showEstimation.set(false)"
+                  (submitted)="onSubmissionSuccess($event)">
+  </app-estimation>
 }
 
-onSearchInput(event: Event): void {
-  const query = (event.target as HTMLInputElement).value;
-  this.searchQuery.set(query);
-  this.productService.setSearchQuery(query);
-}
-
-clearSearch(): void {
-  this.searchQuery.set('');
-  this.productService.setSearchQuery('');
-}
-
-clearCategorySelection(): void {
-  this.categoryService.selectCategory(null);
-  this.productService.setCategoryFilter(undefined);
+// Confirmation View
+@if (showConfirmation()) {
+  <app-confirmation [confirmationNumber]="confirmationNumber()"
+                    (estimateAnotherClick)="onEstimateAnother()">
+  </app-confirmation>
 }
 ```
 
-**Layout** (`buyback-list.component.scss`):
-```scss
-.browse-layout {
-  display: grid;
-  grid-template-columns: 1fr 500px;   // left browse | right sidebar
-  min-height: 100vh;
-}
+### View Transition Methods
 
-.browse-layout__right {
-  position: sticky;
-  top: 66px;
-  align-self: flex-start;             // prevents sidebar from stretching full viewport height
-
-  @include respond-max('sm') {        // collapse on small screens
-    top: 0;
-  }
-}
-```
-
-### 2. Buyback Sidebar Component
-
-**Purpose**: Sticky sidebar that lists all items currently in the buyback list, shows per-item prices using `<skapa-price>`, and displays the total estimate and IKEA Family price at the bottom.
-
-**Location**: `features/buyback-list/components/buyback-sidebar/`
-
-**State**:
 ```typescript
-export class BuybackSidebarComponent extends BaseComponent {
-  @Output() continueToOfferClick = new EventEmitter<void>();
+// Show estimation view (from Browse View)
+onContinueToOffer(): void {
+  this.showEstimation.set(true);
+}
 
-  // All derived from BuybackListService signals
-  translations     = computed(() => this.locale.translations());
-  items            = computed(() => this.buybackService.items());
-  itemCount        = computed(() => this.buybackService.itemCount());
-  totalValue       = computed(() => this.buybackService.totalValue());
-  totalFamilyValue = computed(() => this.buybackService.totalFamilyValue());
-  isEmpty          = computed(() => this.buybackService.isEmpty());
+// Show confirmation view (from Estimation View)
+onSubmissionSuccess(confirmationNum: string): void {
+  this.confirmationNumber.set(confirmationNum);
+  this.showEstimation.set(false);
+  this.showConfirmation.set(true);
+}
 
-  constructor(
-    private buybackService: BuybackListService,
-    private locale: LocaleService,
-    private utility: UtilityService
-  ) {
-    super();
-  }
-
-  // Splits a numeric price into the parts <skapa-price> needs
-  getPriceParts(price: number) {
-    return this.utility.splitPriceForSkapa(price);
-  }
-
-  // Emits event — parent toggles to Estimation view (no route change)
-  continueToSummary(): void {
-    if (this.isEmpty()) return;
-    this.continueToOfferClick.emit();
-  }
-
-  getConditionLabel(condition: string): string { /* ... */ }
-  onQuantityChange(itemId: string, event: any): void { /* ... */ }
-  removeItem(itemId: string): void { /* ... */ }
+// Reset to Browse View (from Confirmation View)
+onEstimateAnother(): void {
+  this.showConfirmation.set(false);
+  this.showEstimation.set(false);
+  this.confirmationNumber.set('');
+  this.clearCategorySelection();
+  this.clearSearch();
 }
 ```
 
-**Template highlights — item prices**:
-```html
-@for (item of items(); track item.id) {
-  <div class="buyback-item">
-    <!-- thumbnail, name, condition label, quantity stepper ... -->
+## Browse View
 
-    <div class="item-price">
-      <span class="price-label">{{ translations().buybackList.itemPrice }}:</span>
-      <skapa-price
-        size="small"
-        currency-position="leading"
-        currency-spacing="thin"
-        [integerValue]="getPriceParts(item.price * item.quantity).integerValue"
-        [decimalValue]="getPriceParts(item.price * item.quantity).decimalValue"
-        [decimalSign]="getPriceParts(item.price * item.quantity).decimalSign"
-        [currencyLabel]="getPriceParts(item.price * item.quantity).currencyLabel">
-      </skapa-price>
-    </div>
+### Layout
 
-    <button class="delete-btn" (click)="removeItem(item.id)">
-      <skapa-icon icon="trash-can"></skapa-icon>
-    </button>
-  </div>
-}
+The Browse View uses a **two-column responsive layout**:
+
+- **Left Column**: Category tree OR Product grid + Search
+- **Right Column**: Buyback sidebar (sticky)
+
+### Components Used
+
+1. **CategoryTreeComponent** (`product-discovery/components/category-tree`)
+   - Hierarchical category navigation
+   - Clickable categories with icons
+   - Signals category selection to ProductService
+
+2. **ProductGridComponent** (`product-discovery/components/product-grid`)
+   - Grid of product cards
+   - Responsive (1-4 columns)
+   - Click to open condition selector
+
+3. **ConditionSelectorComponent** (`product-discovery/components/condition-selector`)
+   - Modal overlay
+   - Product details with image
+   - Condition options (Like New, Very Good, Well Used)
+   - Adds to buyback list
+
+4. **BuybackSidebarComponent**
+   - Shows selected items count
+   - Displays total estimated value
+   - "Continue to Offer" button
+   - Emits `continueToOfferClick` event
+
+### State Flow
+
+```
+User clicks category
+  → categoryService.selectCategory(category)
+  → productService.setCategoryFilter(categoryId)
+  → filteredProducts() recomputes
+  → ProductGrid updates
+
+User clicks product
+  → conditionSelector.open(product)
+  → User selects condition
+  → buybackListService.addItem(product, condition)
+  → Sidebar updates with new item count
+
+User clicks "Continue to Offer"
+  → Sidebar emits continueToOfferClick
+  → showEstimation.set(true)
+  → View switches to Estimation
 ```
 
-**Template highlights — summary totals**:
-```html
-<div class="buyback-sidebar__summary">
-  <!-- Total Estimate -->
-  <div class="summary-row">
-    <span class="summary-label">{{ translations().buybackList.totalEstimate }}:</span>
-    <skapa-price
-      size="medium"
-      currency-position="leading"
-      currency-spacing="thin"
-      [integerValue]="getPriceParts(totalValue()).integerValue"
-      [decimalValue]="getPriceParts(totalValue()).decimalValue"
-      [decimalSign]="getPriceParts(totalValue()).decimalSign"
-      [currencyLabel]="getPriceParts(totalValue()).currencyLabel">
-    </skapa-price>
-  </div>
+## Estimation View
 
-  <!-- IKEA Family Price -->
-  <div class="summary-row summary-row--family">
-    <span class="summary-label">{{ translations().buybackList.familyMemberPrice }}:</span>
-    <skapa-price
-      size="medium"
-      currency-position="leading"
-      currency-spacing="thin"
-      [integerValue]="getPriceParts(totalFamilyValue()).integerValue"
-      [decimalValue]="getPriceParts(totalFamilyValue()).decimalValue"
-      [decimalSign]="getPriceParts(totalFamilyValue()).decimalSign"
-      [currencyLabel]="getPriceParts(totalFamilyValue()).currencyLabel">
-    </skapa-price>
-  </div>
+### Purpose
 
-  <button class="btn btn-primary btn-continue" (click)="continueToSummary()">
-    {{ translations().buybackList.continueToOffer }}
-  </button>
-</div>
-```
+Review selected items, enter user information, and submit the buyback request.
 
-### 3. Estimation Component
+### Features
 
-**Purpose**: Full-width, single-column view that replaces the browse layout when the user clicks "Continue to Offer". No route change — toggled in-page via a `showEstimation` signal on `BuybackListComponent`. Contains four sections: item review, total, requirements, and the submission form.
+- **Items Review Section**:
+  - List of all selected products with conditions
+  - Individual item prices
+  - Total estimated value (using skapa-price)
 
-**Location**: `features/buyback-list/components/estimation/`
+- **Requirements Section**:
+  - Buyback requirements checklist
+  - Terms and conditions
 
-**State**:
+- **User Information Form**:
+  - Email input
+  - Store location selector
+  - Form validation
+
+- **Actions**:
+  - "Back" button → returns to Browse View
+  - "Submit" button → calls submission service
+
+### Submission Flow
+
 ```typescript
-export class EstimationComponent extends BaseComponent {
-  @Output() back = new EventEmitter<void>();   // parent resets showEstimation
+onSubmit(): void {
+  const items = this.buybackListService.items();
+  const formData = {
+    email: this.email(),
+    store: this.selectedStore(),
+    items: items
+  };
 
-  // Form state
-  email           = signal<string>('');
-  selectedStore   = signal<string>('atlanta');
-  privacyAccepted = signal<boolean>(false);
+  this.submissionService.submitBuyback(formData)
+    .subscribe({
+      next: (response) => {
+        this.submitted.emit(response.confirmationNumber);
+      },
+      error: (err) => {
+        // Show error toast
+      }
+    });
+}
+```
 
-  // Derived from service
-  translations = computed(() => this.locale.translations());
-  items        = computed(() => this.buybackService.items());
-  totalValue   = computed(() => this.buybackService.totalValue());
+## Confirmation View
 
-  // All prices use skapa-price via this helper
-  getPriceParts(price: number) {
-    return this.utility.splitPriceForSkapa(price);
+### Purpose
+
+Display success message and next steps after successful submission.
+
+### Features
+
+- **Confirmation Number**:
+  - Generated format: `BYB-XXXXXX`
+  - Copy-to-clipboard button
+  - Success toast notification on copy
+
+- **Next Steps Guide**:
+  - 4-step process explanation
+  - Timeline information
+  - Contact details
+
+- **Actions**:
+  - "Estimate Another Product" → resets to Browse View
+  - "Share Your Feedback" → opens feedback form (future)
+
+- **Responsive Design**:
+  - Mobile: Stacked layout
+  - Tablet: Side-by-side content
+  - Desktop: Full-bleed image with text overlay
+
+### Component API
+
+```typescript
+@Component({
+  selector: 'app-confirmation'
+})
+export class ConfirmationComponent {
+  @Input() confirmationNumber: string = '';
+  @Output() estimateAnotherClick = new EventEmitter<void>();
+
+  copyQuotationNumber(): void {
+    navigator.clipboard.writeText(this.confirmationNumber);
+    // Show toast notification
+  }
+
+  estimateAnother(): void {
+    this.estimateAnotherClick.emit();
   }
 }
-```
-
-**Wiring in the parent** (`buyback-list.component.html`):
-```html
-@if (showEstimation()) {
-  <app-estimation (back)="showEstimation.set(false)"></app-estimation>
-}
-
-@if (!showEstimation()) {
-  <!-- existing browse layout -->
-  <app-buyback-sidebar (continueToOfferClick)="onContinueToOffer()"></app-buyback-sidebar>
-}
-```
-
-**Template sections**:
-
-1. **Item list** — thumbnail, name/description/condition, `<skapa-price size="small">` for the line total, quantity stepper, and "Remove Product" link. All mutations go through `BuybackListService` so the sidebar and estimation view stay in sync.
-
-2. **Total row** — `<skapa-price size="medium">` bound to `totalValue()`. Separated from items by a 1 px border.
-
-3. **Requirements** — three numbered items (clean, assembled, original IKEA sticker) with a CSS-rendered sticker label mockup. No external image dependency.
-
-4. **Submission form** — email `<input>`, store `<select>`, privacy checkbox with a link to the privacy policy (`ExternalUrls.PRIVACY_POLICY`), "Sell back to IKEA" primary button, and "Go back to homepage" outlined button.
-
-**Price rendering** (mandatory pattern — see `skapa-integration.md`):
-```html
-<!-- Per-item price -->
-<skapa-price
-  size="small"
-  currency-position="leading"
-  currency-spacing="thin"
-  [integerValue]="getPriceParts(item.price * item.quantity).integerValue"
-  [decimalValue]="getPriceParts(item.price * item.quantity).decimalValue"
-  [decimalSign]="getPriceParts(item.price * item.quantity).decimalSign"
-  [currencyLabel]="getPriceParts(item.price * item.quantity).currencyLabel">
-</skapa-price>
-
-<!-- Total -->
-<skapa-price
-  size="medium"
-  currency-position="leading"
-  currency-spacing="thin"
-  [integerValue]="getPriceParts(totalValue()).integerValue"
-  [decimalValue]="getPriceParts(totalValue()).decimalValue"
-  [decimalSign]="getPriceParts(totalValue()).decimalSign"
-  [currencyLabel]="getPriceParts(totalValue()).currencyLabel">
-</skapa-price>
 ```
 
 ## Services
 
 ### BuybackListService
 
-**Purpose**: Manage buyback list state and persistence.
+Manages the list of selected products for buyback.
 
-**Location**: `features/buyback-list/services/buyback-list.service.ts`
-
-**Implementation**:
 ```typescript
-import { Injectable, signal, computed } from '@angular/core';
-import { DatastoreService } from '../../../core/services/datastore.service';
-import { ConditionService } from '../../condition-assessment/services/condition.service';
-import { BuybackItem } from '../models/buyback-item.model';
-import { ProductCondition } from '../../../shared/constants/app.constants';
-
 @Injectable({ providedIn: 'root' })
 export class BuybackListService {
   private _items = signal<BuybackItem[]>([]);
-
-  // Readonly signals
-  readonly items = this._items.asReadonly();
-
-  // Computed values
-  readonly itemCount = computed(() => this._items().length);
-
-  readonly total = computed(() =>
-    this._items().reduce((sum, item) => sum + item.adjustedPrice, 0)
+  public readonly items = this._items.asReadonly();
+  public readonly totalItems = computed(() => this._items().length);
+  public readonly totalValue = computed(() =>
+    this._items().reduce((sum, item) => sum + item.estimatedPrice, 0)
   );
 
-  readonly isEmpty = computed(() => this.itemCount() === 0);
-
-  constructor(
-    private datastore: DatastoreService,
-    private conditionService: ConditionService
-  ) {
-    this.loadFromStorage();
-  }
-
-  loadFromStorage(): void {
-    const stored = this.datastore.getBuybackList<BuybackItem>();
-    this._items.set(stored);
-  }
-
-  saveToStorage(): void {
-    this.datastore.setBuybackList(this._items());
-  }
-
-  addItem(item: BuybackItem): void {
+  addItem(product: Product, condition: Condition): void {
+    const item: BuybackItem = {
+      id: crypto.randomUUID(),
+      product,
+      condition,
+      estimatedPrice: this.calculatePrice(product, condition),
+      addedAt: new Date()
+    };
     this._items.update(items => [...items, item]);
-    this.saveToStorage();
+    this.persistToStorage();
   }
 
   removeItem(itemId: string): void {
-    this._items.update(items => items.filter(item => item.id !== itemId));
-    this.saveToStorage();
-  }
-
-  updateItemCondition(itemId: string, newCondition: ProductCondition): void {
-    this._items.update(items =>
-      items.map(item => {
-        if (item.id === itemId) {
-          const adjustedPrice = this.conditionService.calculatePrice(
-            item.basePrice,
-            newCondition
-          );
-          return { ...item, condition: newCondition, adjustedPrice };
-        }
-        return item;
-      })
-    );
-    this.saveToStorage();
-  }
-
-  getItemById(itemId: string): BuybackItem | undefined {
-    return this._items().find(item => item.id === itemId);
+    this._items.update(items => items.filter(i => i.id !== itemId));
+    this.persistToStorage();
   }
 
   clear(): void {
     this._items.set([]);
-    this.datastore.clearBuybackList();
-  }
-
-  hasItem(productId: string): boolean {
-    return this._items().some(item => item.product.id === productId);
+    this.datastore.remove(STORAGE_KEYS.BUYBACK_LIST);
   }
 }
 ```
 
-## Translations
+### SubmissionService
 
-### English
+Handles buyback request submission and quotation generation.
 
 ```typescript
-buybackList: {
-  title: 'Your Buyback List',
-  empty: 'No items in your list yet',
-  emptyDescription: 'Start by searching for products you want to sell back',
-  startShopping: 'Find Products',
-  itemCount: 'items',
-  noItems: 'Your buyback list is empty',
-  removeItem: 'Remove',
-  updateCondition: 'Update condition',
-  continueToOffer: 'Continue to Offer',
-  // Price labels (used by BuybackSidebarComponent with <skapa-price>)
-  itemPrice: 'Price',
-  totalEstimate: 'Total Estimate',
-  familyMemberPrice: 'IKEA Family Price'
+@Injectable({ providedIn: 'root' })
+export class SubmissionService {
+  submitBuyback(data: SubmissionData): Observable<SubmissionResponse> {
+    // Mock implementation with 1-second delay
+    return of({
+      confirmationNumber: this.generateConfirmationNumber(),
+      estimatedTotal: data.items.reduce((sum, i) => sum + i.estimatedPrice, 0),
+      submittedAt: new Date()
+    }).pipe(delay(1000));
+  }
+
+  private generateConfirmationNumber(): string {
+    const randomNum = Math.floor(100000 + Math.random() * 900000);
+    return `BYB-${randomNum}`;
+  }
 }
 ```
 
-### Arabic
+## Responsive Behavior
+
+### Browse View Breakpoints
+
+- **Mobile (<600px)**: Single column, sidebar at bottom
+- **Tablet (600-1024px)**: Sidebar shows as overlay/drawer
+- **Desktop (>1024px)**: Two-column layout with fixed sidebar
+
+### Grid System
+
+The application uses a custom 3-breakpoint grid:
+
+- **Base (mobile)**: 4 columns, 0.75rem gaps
+- **Tablet (37.5em+)**: 6 columns, 1rem gaps
+- **Desktop (56.25em+)**: 12 columns, 1.25rem gaps
+
+See `confirmation.component.scss` for implementation example.
+
+## Routing
+
+**Important**: This is a single-page application with ONE route:
 
 ```typescript
-buybackList: {
-  title: 'قائمة إعادة الشراء الخاصة بك',
-  empty: 'لا توجد عناصر في قائمتك بعد',
-  emptyDescription: 'ابدأ بالبحث عن المنتجات التي تريد بيعها',
-  startShopping: 'ابحث عن المنتجات',
-  itemCount: 'عناصر',
-  noItems: 'قائمة إعادة الشراء فارغة',
-  removeItem: 'إزالة',
-  updateCondition: 'تحديث الحالة',
-  continueToOffer: 'المتابعة إلى العرض',
-  // تسميات الأسعار (يستخدمها BuybackSidebarComponent مع <skapa-price>)
-  itemPrice: 'السعر',
-  totalEstimate: 'التقدير الإجمالي',
-  familyMemberPrice: 'سعر عائلة ايكيا'
+// app.routes.ts
+{
+  path: 'buy-back-quote',
+  loadComponent: () => import('./features/buyback-list/pages/buyback-list/buyback-list.component')
+    .then(m => m.BuybackListComponent)
 }
 ```
 
-## Best Practices
+**All view changes are handled via component state, NOT routing.**
 
-### ✅ Do's
+## Why Single-Page Architecture?
 
-1. **Persist immediately** - Save to localStorage on every change
-2. **Load on init** - Restore state when page loads
-3. **Show empty state** - Guide users when list is empty
-4. **Confirm deletions** - Prevent accidental removals
-5. **Display totals prominently** - Show estimated value
-6. **Allow condition editing** - Let users update without removing
-7. **Use computed signals** - For totals and counts
+### Benefits
 
-### ❌ Don'ts
+1. **Faster Navigation**: Instant view switching without route changes
+2. **Simpler State Management**: All state in one component hierarchy
+3. **Better Performance**: Single lazy chunk instead of multiple route chunks
+4. **Smoother UX**: No page reloads between views
+5. **Easier Debugging**: All flow logic in one place
+6. **Smaller Bundle**: Reduced overhead from routing
 
-1. **Don't lose data on refresh** - Always persist to storage
-2. **Don't allow empty submissions** - Validate before continuing
-3. **Don't forget confirmation** - Always confirm delete
-4. **Don't mutate signals directly** - Use update()
-5. **Don't skip validation** - Validate items before saving
+### Tradeoffs
 
-## Edge Cases
+1. **No Deep Linking**: Can't link directly to Estimation or Confirmation views
+2. **Browser History**: Back button doesn't navigate between views
+3. **State Management**: Must carefully manage component state
 
-### Empty Sidebar
+For this use case, the tradeoffs are acceptable because:
+- Buyback flow is linear (no need for deep linking)
+- Users progress forward through the flow
+- No need to bookmark intermediate steps
 
-The sidebar shows an empty-state message (`noItems` translation key) when `BuybackListService.isEmpty()` is true. The "Continue to Offer" button is guarded — it emits `continueToOfferClick` only when the list is non-empty:
+## Testing
 
-```typescript
-continueToSummary(): void {
-  if (this.isEmpty()) return;            // no-op when list is empty
-  this.continueToOfferClick.emit();      // parent switches to Estimation view
-}
-```
-
-### Quantity Changes
-
-`skapa-quantity-stepper` emits a custom event. The sidebar extracts the value from `event.detail` and forwards it to the service:
+### Component Testing
 
 ```typescript
-onQuantityChange(itemId: string, event: any): void {
-  const quantity = event.detail?.value || event.detail;
-  this.buybackService.updateQuantity(itemId, quantity);
-}
+describe('BuybackListComponent', () => {
+  it('should show browse view by default', () => {
+    expect(component.showEstimation()).toBe(false);
+    expect(component.showConfirmation()).toBe(false);
+  });
+
+  it('should switch to estimation view', () => {
+    component.onContinueToOffer();
+    expect(component.showEstimation()).toBe(true);
+  });
+
+  it('should switch to confirmation view after submission', () => {
+    component.onSubmissionSuccess('BYB-123456');
+    expect(component.showConfirmation()).toBe(true);
+    expect(component.confirmationNumber()).toBe('BYB-123456');
+  });
+
+  it('should reset to browse view', () => {
+    component.onEstimateAnother();
+    expect(component.showEstimation()).toBe(false);
+    expect(component.showConfirmation()).toBe(false);
+  });
+});
 ```
 
----
+## Related Documentation
 
-**Next**: [Offer Calculation](./offer-calculation.md)
+- [Confirmation Page](./confirmation-page.md) - Detailed confirmation view documentation
+- [Product Discovery](./product-discovery.md) - Reusable product UI components
+- [Folder Structure](../01-architecture/folder-structure.md) - Project organization
+- [Routing and Localization](../02-core-concepts/routing-and-localization.md) - SPA routing setup

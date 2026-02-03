@@ -1,6 +1,5 @@
-import { Component, computed, CUSTOM_ELEMENTS_SCHEMA, Input } from '@angular/core';
+import { Component, computed, CUSTOM_ELEMENTS_SCHEMA, EventEmitter, Input, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router } from '@angular/router';
 import { BaseComponent } from '../../../../shared/base-classes/base.component';
 import { LocaleService } from '../../../../core/services/locale.service';
 
@@ -14,13 +13,11 @@ import { LocaleService } from '../../../../core/services/locale.service';
 })
 export class ConfirmationComponent extends BaseComponent {
   @Input() confirmationNumber: string = '';
+  @Output() estimateAnotherClick = new EventEmitter<void>();
 
   translations = computed(() => this.locale.translations());
 
-  constructor(
-    private locale: LocaleService,
-    private router: Router
-  ) {
+  constructor(private locale: LocaleService) {
     super();
   }
 
@@ -30,7 +27,7 @@ export class ConfirmationComponent extends BaseComponent {
   }
 
   estimateAnother(): void {
-    this.router.navigate(['/product-discovery']);
+    this.estimateAnotherClick.emit();
   }
 
   shareFeedback(): void {

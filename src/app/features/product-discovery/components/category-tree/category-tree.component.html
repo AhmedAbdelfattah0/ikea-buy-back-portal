@@ -1,10 +1,23 @@
-<!-- Category Tree Navigation - Side by Side Columns -->
+<!-- Category Tree Navigation - Side by Side Columns (Desktop) / Single Column (Mobile) -->
 <div class="category-tree">
   <h3 class="category-tree__title">{{ translations().productDiscovery.categories }}</h3>
 
+  <!-- Mobile Back Button (shown when not at level 1) -->
+  @if (mobileViewLevel() > 1) {
+    <button
+      type="button"
+      class="mobile-back-button"
+      (click)="mobileViewLevel() === 2 ? goBackToLevel1() : goBackToLevel2()"
+    >
+      <skapa-icon slot="icon" icon="chevron-left-small"></skapa-icon>
+
+      <span class="back-text">{{ mobileBreadcrumbTitle() }}</span>
+    </button>
+  }
+
   <div class="category-columns">
     <!-- Level 1 - Main Categories -->
-    <div class="category-column">
+    <div class="category-column" [class.mobile-visible]="mobileViewLevel() === 1">
       <ul class="category-list">
         @for (category of rootCategories(); track category.id) {
           <li class="category-item">
@@ -17,9 +30,7 @@
             >
               <span class="category-name">{{ category.name }}</span>
               @if (hasChildren(category)) {
-                <svg class="chevron-icon" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M6 4L10 8L6 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                </svg>
+                <skapa-icon slot="icon" icon="chevron-right-small"></skapa-icon>
               }
             </button>
           </li>
@@ -29,7 +40,7 @@
 
     <!-- Level 2 - Subcategories (shown when level 1 selected) -->
     @if (level2Categories().length > 0) {
-      <div class="category-column">
+      <div class="category-column" [class.mobile-visible]="mobileViewLevel() === 2">
         <ul class="category-list">
           @for (category of level2Categories(); track category.id) {
             <li class="category-item">
@@ -42,9 +53,7 @@
               >
                 <span class="category-name">{{ category.name }}</span>
                 @if (hasChildren(category)) {
-                  <svg class="chevron-icon" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M6 4L10 8L6 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                  </svg>
+                  <skapa-icon slot="icon" icon="chevron-right-small"></skapa-icon>
                 }
               </button>
             </li>
@@ -55,7 +64,7 @@
 
     <!-- Level 3 - Sub-subcategories (shown when level 2 selected) -->
     @if (level3Categories().length > 0) {
-      <div class="category-column">
+      <div class="category-column" [class.mobile-visible]="mobileViewLevel() === 3">
         <ul class="category-list">
           @for (category of level3Categories(); track category.id) {
             <li class="category-item">

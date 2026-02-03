@@ -9,19 +9,10 @@ export namespace Routes {
   // Root
   export const ROOT = '';
 
-  // Product Discovery
-  export const SEARCH = 'search';
-  export const CATEGORIES = 'categories';
-  export const CATEGORY_BROWSE = 'categories/browse';
-
-  // Buyback List
+  // Buyback - Single Page Application
   export const BUYBACK_QUOTE = 'buy-back-quote';
 
-  // Submission
-  export const SUMMARY = 'summary';
-  export const CONFIRMATION = 'confirmation';
-
-  // Error Pages
+  // Error Pages (for future use)
   export const NOT_FOUND = '404';
   export const ERROR = 'error';
 }
@@ -30,11 +21,7 @@ export namespace Routes {
  * Route Titles (for page titles)
  */
 export namespace RouteTitles {
-  export const SEARCH = 'Search Products';
-  export const CATEGORIES = 'Browse Categories';
-  export const BUYBACK_LIST = 'Your Buyback List';
-  export const SUMMARY = 'Review & Submit';
-  export const CONFIRMATION = 'Confirmation';
+  export const BUYBACK_QUOTE = 'IKEA Buyback Portal';
   export const NOT_FOUND = 'Page Not Found';
   export const ERROR = 'Error';
 }

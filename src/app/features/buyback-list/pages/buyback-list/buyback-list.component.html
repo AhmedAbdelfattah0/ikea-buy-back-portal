@@ -1,7 +1,10 @@
 <div class="buyback-list-page">
   <!-- Confirmation View -->
   @if (showConfirmation()) {
-    <app-confirmation [confirmationNumber]="confirmationNumber()"></app-confirmation>
+    <app-confirmation
+      [confirmationNumber]="confirmationNumber()"
+      (estimateAnotherClick)="onEstimateAnother()">
+    </app-confirmation>
   }
 
   <!-- Estimation View -->
@@ -29,11 +32,11 @@
         <div class="products-header">
           <button type="button" class="back-to-categories" (click)="clearCategorySelection()">
             <!-- <skapa-icon-button title="Caption defined in the title attribute" href="" variant="tertiary"> -->
-              <skapa-icon slot="icon" icon="chevron-left-small"></skapa-icon> 
+              <skapa-icon slot="icon" icon="chevron-left-small"></skapa-icon>
               <!-- Tertiary action</skapa-icon-button> -->
             {{ selectedCategory()!.name }}
           </button>
-      
+
         </div>
       }
 
@@ -49,29 +52,10 @@
                 <skapa-icon slot="icon" icon="camera"></skapa-icon>
                 Camera
               </skapa-icon-button>
-            
+
             <span slot="search-label">Submit</span>
           </skapa-search>
 
-
-          <!-- <input
-            type="text"
-            class="search-input"
-            [placeholder]="translations().productDiscovery.searchPlaceholder"
-            [value]="searchQuery()"
-            (input)="onSearchInput($event)"
-          />
-          @if (searchQuery()) {
-            <button
-              type="button"
-              class="search-clear"
-              (click)="clearSearch()"
-              attr.aria-label="{{ translations().common.close }}"
-            >
-              <skapa-icon icon="cross" slot="icon"></skapa-icon>
-            </button>
-          }
-          <skapa-icon  class="search-icon"  icon="magnifying-glass" slot="icon"></skapa-icon> -->
         </div>
       </div>
 
@@ -96,10 +80,7 @@
         }
       </div>
 
-      <!-- Info Message -->
-      <div class="info-message">
-        <p>{{ translations().productDiscovery.selectProduct }}</p>
-      </div>
+
     </div>
 
     <!-- Right Column: Buyback List Sidebar -->
@@ -111,4 +92,9 @@
   <!-- Condition Selector Modal -->
   <app-condition-selector></app-condition-selector>
   } <!-- end @if (!showEstimation()) -->
+
+    <!-- Info Message -->
+      <div class="info-message">
+        <p>{{ translations().productDiscovery.selectProduct }}</p>
+      </div>
 </div>

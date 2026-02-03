@@ -15,11 +15,13 @@ All URLs follow this pattern:
 ### Examples
 
 ```
-https://example.com/sa/en/search
-https://example.com/sa/ar/categories
-https://example.com/bh/en/buyback-list
-https://example.com/bh/ar/summary
+https://example.com/sa/en/buy-back-quote
+https://example.com/sa/ar/buy-back-quote
+https://example.com/bh/en/buy-back-quote
+https://example.com/bh/ar/buy-back-quote
 ```
+
+**Note**: This is a single-page application - all URLs lead to the same `buy-back-quote` route, with views managed by component state.
 
 ### URL Components
 
@@ -83,21 +85,32 @@ export const appConfig: ApplicationConfig = {
 
 ### 2. Route Definitions (Without Locale Prefix)
 
-Routes are defined **without** the market/lang prefix since APP_BASE_HREF handles it.
+This is a **single-page application** with one main route. Routes are defined **without** the market/lang prefix since APP_BASE_HREF handles it.
 
 ```typescript
 // src/app/app.routes.ts
 
 export const routes: Routes = [
-  { path: '', redirectTo: 'search', pathMatch: 'full' },
-  { path: 'search', loadComponent: () => import('./...').then(m => m.SearchComponent) },
-  { path: 'categories', loadComponent: () => import('./...').then(m => m.CategoryBrowseComponent) },
-  { path: 'buyback-list', loadComponent: () => import('./...').then(m => m.BuybackListComponent) },
-  { path: 'summary', loadComponent: () => import('./...').then(m => m.SummaryComponent) },
-  { path: 'confirmation', loadComponent: () => import('./...').then(m => m.ConfirmationComponent) },
-  { path: '**', redirectTo: 'search' }
+  {
+    path: '',
+    redirectTo: 'buy-back-quote',
+    pathMatch: 'full'
+  },
+  {
+    path: 'buy-back-quote',
+    loadComponent: () =>
+      import('./features/buyback-list/pages/buyback-list/buyback-list.component')
+        .then(m => m.BuybackListComponent),
+    title: 'Buy back estimator tool - IKEA Buyback Portal'
+  },
+  {
+    path: '**',
+    redirectTo: 'buy-back-quote'
+  }
 ];
 ```
+
+**Note**: The entire application is contained in the `BuybackListComponent`, which manages three views (Browse, Estimation, Confirmation) via component state, not routing.
 
 ### 3. LocaleService Integration
 
@@ -135,50 +148,40 @@ export class LocaleService {
 
 ### In Components
 
+**Note**: This is a single-page application. All navigation is handled via component state, not routing.
+
 ```typescript
-import { Router } from '@angular/router';
+// Navigation is done via component signals, not router
+export class BuybackListComponent {
+  showEstimation = signal<boolean>(false);
+  showConfirmation = signal<boolean>(false);
 
-export class MyComponent {
-  constructor(private router: Router) {}
-
-  // Navigate to another route (locale prefix added automatically)
-  goToCategories() {
-    this.router.navigate(['/categories']);
-    // Results in: /sa/en/categories (or current locale)
+  // Show estimation view
+  onContinueToOffer() {
+    this.showEstimation.set(true);
   }
 
-  // Navigate with query params
-  searchProducts(query: string) {
-    this.router.navigate(['/search'], {
-      queryParams: { q: query }
-    });
-    // Results in: /sa/en/search?q=sofa
+  // Show confirmation view
+  onSubmissionSuccess(confirmationNum: string) {
+    this.confirmationNumber.set(confirmationNum);
+    this.showEstimation.set(false);
+    this.showConfirmation.set(true);
   }
 
-  // Navigate with state
-  goToSummary() {
-    this.router.navigate(['/summary'], {
-      state: { data: this.buybackList }
-    });
+  // Reset to browse view
+  onEstimateAnother() {
+    this.showConfirmation.set(false);
+    this.showEstimation.set(false);
   }
 }
 ```
 
-### In Templates
+### Accessing the Application
 
 ```html
-<!-- RouterLink automatically includes locale -->
-<a routerLink="/search">Search Products</a>
-<!-- Renders as: /sa/en/search -->
-
-<a routerLink="/categories">Browse Categories</a>
-<!-- Renders as: /sa/en/categories -->
-
-<!-- With query params -->
-<a [routerLink]="['/search']" [queryParams]="{category: 'furniture'}">
-  Search Furniture
-</a>
-<!-- Renders as: /sa/en/search?category=furniture -->
+<!-- Single entry point -->
+<a href="/sa/en/buy-back-quote">Start Buyback (English)</a>
+<a href="/sa/ar/buy-back-quote">بدء إعادة الشراء (Arabic)</a>
 ```
 
 ## Changing Locale

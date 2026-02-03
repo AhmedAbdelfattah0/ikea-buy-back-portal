@@ -106,4 +106,16 @@ export class BuybackListComponent extends BaseComponent {
     this.showEstimation.set(false);
     this.showConfirmation.set(true);
   }
+
+  /**
+   * Reset to initial view (called from confirmation page)
+   */
+  onEstimateAnother(): void {
+    this.showConfirmation.set(false);
+    this.showEstimation.set(false);
+    this.confirmationNumber.set('');
+    // Optionally reset other state
+    this.clearCategorySelection();
+    this.clearSearch();
+  }
 }
